@@ -524,6 +524,31 @@ body.gnb-split .chead,body.gnb-top .chead{border-bottom:none}
 .vv-ghost{width:28px;height:28px;border-radius:7px;border:none;background:transparent;color:var(--text-2);display:grid;place-items:center;cursor:pointer}
 .vv-ghost:hover{background:var(--hover);color:var(--ink)}
 .vv-ghost svg{width:16px;height:16px}
+/* 그룹 전체보기 시안 D — 표형 (c-071) · 한 행에 가로로 펼쳐 스캔, 날짜는 제 열을 갖는다.
+   기존 시안(A 카드 / B 스캔리스트 / C 행리스트)은 이름 아래 메타가 세로로 쌓이고
+   호버 ⋯ 가 날짜 자리를 덮었다. 여기선 ⋯ 도 제 열이라 무엇도 가리지 않는다. */
+.vv-gtable{border:1px solid var(--border-l);border-radius:var(--r-lg);overflow:hidden}
+.vv-gthead,.vv-gtrow{display:grid;grid-template-columns:1fr 76px 68px 92px 44px 40px;align-items:center;gap:10px;padding:10px 14px}
+.vv-gthead{font-size:11px;color:var(--text-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--border-l)}
+.vv-gtrow{border-bottom:1px solid var(--border-l);font-size:var(--fs-cap);cursor:pointer}
+.vv-gtable .vv-gtrow:last-child{border-bottom:none}
+.vv-gtrow:hover{background:var(--surface-2)}
+.vv-gtrow .nm{display:flex;align-items:center;gap:8px;font-size:var(--fs-ui);color:var(--ink);min-width:0}
+.vv-gtrow .nm .t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vv-gtrow .nm svg{width:16px;height:16px;flex-shrink:0;color:var(--text-3)}
+.vv-gtrow .col{color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vv-gtrow .col.num{font-variant-numeric:tabular-nums} /* 숫자 열은 자릿수가 흔들리지 않게 */
+.vv-gfav{border:none;background:none;padding:0;cursor:pointer;display:grid;place-items:center;color:var(--text-4)}
+.vv-gfav svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6}
+.vv-gfav:hover{color:var(--text-2)}
+.vv-gfav.on{color:var(--accent)}
+.vv-gfav.on svg{fill:currentColor;stroke:currentColor} /* 켜짐은 채움 — 별 윤곽만으론 한눈에 안 갈린다 */
+.vv-gtrow .rmore{visibility:hidden;width:28px;height:28px;border-radius:7px;border:none;background:transparent;
+  color:var(--text-3);display:grid;place-items:center;cursor:pointer;padding:0;justify-self:end}
+.vv-gtrow:hover .rmore{visibility:visible} /* 자리는 늘 차지하되 호버에만 보인다 — 날짜를 덮지 않는다 */
+.vv-gtrow .rmore:hover{background:var(--hover);color:var(--ink)}
+.vv-gtrow .rmore svg{width:16px;height:16px}
+.grps-layout button{flex:none;padding:0 10px} /* 시안 전환 — 4칸이 헤더 폭을 다 먹지 않게 내용폭으로 */
 #aiViewGroup .msgs{display:flex;flex-direction:column}
 #aiViewGroup .thread{margin-block:6vh 0;width:100%}
 .msg{display:flex;flex-direction:column}
@@ -1006,7 +1031,9 @@ body.lnb-min.lnbmode-icon #s-know .kfold .kfmore{display:none!important}
 /* ============ 대시보드 ============ */
 .dash{flex:1;overflow-y:auto;padding:44px 32px 24px;background:var(--canvas)}
 .dash-in{max-width:1080px;margin:0 auto}
-.dash-hello{font-size:var(--fs-greet);font-weight:400;line-height:1.17;margin-bottom:4px}
+.dash-hello{font-size:var(--fs-greet);font-weight:400;line-height:1.17;margin-bottom:4px;
+  display:flex;align-items:baseline;gap:12px} /* 우측 끝에 수정 시각 (c-074) */
+.dash-mtime{margin-left:auto;font-size:var(--fs-cap);color:var(--text-3);font-variant-numeric:tabular-nums;white-space:nowrap}
 .dash-date{font-size:var(--fs-cap);color:var(--text-3);margin-bottom:24px}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
 .card{background:var(--canvas);border:1px solid var(--border-l);border-radius:var(--r-2xl);padding:16px 18px}
@@ -1801,7 +1828,9 @@ body.shell-empty #s-ai .srow.grp,body.shell-empty #s-ai .srow.sess,body.shell-em
 .chg .cgo{flex:0 0 auto;font-size:var(--fs-cap);color:var(--accent);text-decoration:none;white-space:nowrap}
 .chg .cgo:hover{text-decoration:underline}
 /* 수정사항 — V1→V2 원본 히스토리 버튼·모달 (c-027) */
-.chg-histbtn{display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:7px 14px;border:1px solid var(--border-d);border-radius:9999px;background:var(--canvas);color:var(--text-2);font:inherit;font-size:var(--fs-cap);cursor:pointer;transition:background .12s,color .12s}
+/* 아래 여백은 이 버튼이 갖는다 (c-072) — 다음에 오는 .grid 는 다른 화면과 공용이라 건드리지 않는다.
+   위 12 / 아래 18 로 비대칭인 건 위는 같은 머리글 묶음(설명문)이고 아래는 본문 카드로 넘어가는 경계라서다. */
+.chg-histbtn{display:inline-flex;align-items:center;gap:7px;margin-top:12px;margin-bottom:18px;padding:7px 14px;border:1px solid var(--border-d);border-radius:9999px;background:var(--canvas);color:var(--text-2);font:inherit;font-size:var(--fs-cap);cursor:pointer;transition:background .12s,color .12s}
 .chg-histbtn:hover{background:var(--hover);color:var(--ink)}
 .chg-histbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .chg-histbtn .cnt{color:var(--text-3);font-weight:600}
@@ -1955,17 +1984,22 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
   <section class="screen on" id="s-dash">
     <div class="dash" style="width:100%">
       <div class="dash-in">
-      <div class="dash-hello">수정사항</div>
+      <div class="dash-hello">수정사항<span class="dash-mtime" id="dashMtime"></span></div>
       <div class="dash-date">V1 → V2에서 달라진 것 · 코멘트 기록에서 테마별로 추림 · 각 줄의 [보기]로 해당 화면으로 이동</div>
-      <button class="chg-histbtn" id="chgHistBtn"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>원본 변경 내역 전체보기<span class="cnt" id="chgHistBtnCnt">42</span></button>
+      <button class="chg-histbtn" id="chgHistBtn"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>원본 변경 내역 전체보기<span class="cnt" id="chgHistBtnCnt">68</span></button>
       <div class="grid">
         <div class="card chg-card" style="grid-column:span 12">
-          <h3>AI 채팅 <span class="chip chip-g">5</span></h3>
-          <div class="chg"><span class="ct">첨부·지식 메뉴 이름을 <b>지식 업로드 / 지식 불러오기 / 지식 작성</b> 한 벌로 통일했습니다. 같은 일을 하는 항목이 화면마다 다르게 불리던 걸 맞췄습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
-          <div class="chg"><span class="ct">메뉴 설명을 <b>‘~합니다.’ 문장형</b>으로 맞추고 마침표를 넣었습니다. 명사구로 끊기던 좁은 드롭다운까지 포함합니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <h3>AI 채팅 <span class="chip chip-g">10</span></h3>
+          <div class="chg"><span class="ct">지식 계열 이름을 <b>지식 업로드 / 지식 불러오기 / 지식 작성</b> 한 벌로 통일했습니다. V1의 ‘지식함에서 선택’·‘텍스트 작성’이 사라졌고, 첨부 메뉴부터 AI 도우미 참조까지 같은 이름을 씁니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">첨부 메뉴 설명을 <b>‘~합니다.’ 문장형</b>으로 맞췄습니다. 좁은 ‘지식 추가’ 드롭다운은 짧은 형태로 남겨 두 메뉴가 구분됩니다.</span><a class="cgo" href="#ai">보기 →</a></div>
           <div class="chg"><span class="ct">업로드 창 제목이 <b>들어온 경로에 따라</b> ‘지식 업로드’ 또는 ‘파일 업로드’로 바뀝니다. 같은 창이지만 무엇이 되는지가 제목에 드러납니다.</span><a class="cgo" href="#ai">보기 →</a></div>
-          <div class="chg"><span class="ct">AI 지식 패널에 <b>섹션 구분선</b>을 넣고 세로 간격 규칙을 정했습니다. 접어도 구분선은 남습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">AI 지식 패널에 <b>섹션 구분선</b>을 넣고 세로 간격 규칙을 정했습니다. 섹션을 접거나 필터를 눌러도 구분선은 남습니다. 협업방 지식 패널도 같은 리듬으로 맞췄습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
           <div class="chg"><span class="ct">지식을 지우는 동작을 <b>‘지식 삭제’와 ‘AI 지식에서 빼기’로 분리</b>하고, 되돌릴 수 없는 쪽에만 확인을 받습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">지식 출처 표기를 <b>‘내가 올림’으로 통일</b>했습니다. V1의 ‘내가 작성’·‘내가 업로드’ 두 갈래와 ‘지식함에서 가져옴’이 없어지고, 불러온 지식은 ‘[올린이] 올림 · 날짜’, 업로드한 지식은 날짜만 답니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">눈 아이콘 툴팁을 <b>‘AI가 지식으로 활용 중 / 활용 안 함’</b>으로 줄이고, ‘N개의 지식 활용 중’을 누르면 그 필터로 넘어갑니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">‘대화 목차’가 <b>‘질문 리스트’</b>가 되고, 검색이 <b>‘대화 텍스트 / 내 질문’ 2탭</b>으로 합쳐지며 별도 버튼을 흡수했습니다. 누르면 그 위치로 이동한다는 안내도 붙였습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">왼쪽 메뉴의 즐겨찾기·그룹·AI채팅 사이에 <b>구분선</b>을 넣었습니다(접어도 유지). 목록 바닥 여백도 여섯 화면 모두 같은 값으로 맞췄습니다.</span><a class="cgo" href="#ai">보기 →</a></div>
+          <div class="chg"><span class="ct">⋯ 메뉴에서 <b>‘완전 삭제’를 빼고</b> ‘휴지통으로 이동’만 남겼습니다. 완전 삭제는 휴지통 화면 안에서만 합니다.</span><a class="cgo" href="#ai">보기 →</a></div>
         </div>
         <div class="card chg-card" style="grid-column:span 12">
           <h3>협업 <span class="chip chip-g">5</span></h3>
@@ -2160,6 +2194,12 @@ Authorization: Bearer ****</code></pre>
           <div style="display:flex;align-items:center;gap:8px;margin:8px 0 14px">
             <div class="msearch" style="max-width:280px;margin:0"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="grpsQ" placeholder="그룹 검색"></div>
             <div style="flex:1"></div>
+            <!-- 시안 전환 (c-071) — LAB 설정은 localStorage 에 저장된 게 우선이라 파일 기본값을 바꿔도
+                 이미 쓰던 브라우저엔 반영되지 않는다. 그래서 화면에서 바로 고를 수 있게 뒀다. -->
+            <div class="seg grps-layout" style="flex-shrink:0;margin:0 6px 0 0">
+              <button data-glay="a" title="카드">카드</button><button data-glay="b" title="스캔 리스트">리스트</button
+              ><button data-glay="c" title="행">행</button><button data-glay="d" title="표">표</button>
+            </div>
             <div class="chats-sort2" style="display:flex;gap:6px;flex-shrink:0">
               <button class="btn btn-sec btn-sm chats-sortbtn" data-cf="time" title="최신순 정렬 (누르면 방향 전환)" style="display:flex;align-items:center;gap:4px"><span>최신순</span><span class="ssort-arrows"><svg class="ar-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><svg class="ar-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
               <button class="btn btn-sec btn-sm chats-sortbtn" data-cf="name" title="가나다순 정렬 (누르면 방향 전환)" style="display:flex;align-items:center;gap:4px"><span>가나다순</span><span class="ssort-arrows"><svg class="ar-up" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><svg class="ar-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
@@ -2954,7 +2994,7 @@ Authorization: Bearer ****</code></pre>
         <tbody>
         <!-- CHG-HIST:BEGIN -->
         <tr><td class="ch-scr">(전역)</td><td class="ch-el">—</td><td class="ch-ch">lab_v2 유지보수 리팩터 완료 — 주석정리·명칭통일·중복제거·위험색/배경 토큰화. 남은 건 눈 확인/대규모라 기능작업 때로 이연</td><td class="ch-st">반영(보관)</td></tr>
-        <tr><td class="ch-scr">(전역)</td><td class="ch-el">수정사항</td><td class="ch-ch">수정사항 페이지에 V1→V2 원본 변경내역(35건)을 여는 [전체보기] 버튼·모달 추가 — 화면명 클릭 시 이동</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr">(전역)</td><td class="ch-el">수정사항</td><td class="ch-ch">수정사항 페이지에 V1→V2 원본 변경내역(35건)을 여는 [전체보기] 버튼·모달 추가 — 화면명 클릭 시 이동</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">지식 저장함</td><td class="ch-ch">지식 명칭 체계 전면 반영 — AI채팅 지식/협업 지식·업로드한 지식·불러온 지식·저장소는 '지식함'. 협업 패널명만 확인</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">출처 라벨 '내가 작성'·'내가 업로드' → '내가 올림' 통일 — '텍스트 작성'은 엉킴 있어 확인</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">업로드한 지식</td><td class="ch-ch">AI 지식 패널의 '업로드한 지식'·'불러온 지식' 섹션 라벨 위에 LNB와 같은 1px 가로 구분선 추가</td><td class="ch-st">반영(보관)</td></tr>
@@ -2971,12 +3011,33 @@ Authorization: Bearer ****</code></pre>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">지식 업로드</td><td class="ch-ch">AI 도우미 참조 추가 메뉴까지 '지식 업로드 / 지식 불러오기'로 통일 — 지식 계열 전면 정리 완료</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">파일 업로드</td><td class="ch-ch">업로드 모달 제목을 진입 경로에 따라 '지식 업로드'/'파일 업로드'로 바뀌게 처리</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내용을 직접 작성하여 지식으로 활용합니다.</td><td class="ch-ch">지식 계열 메뉴 설명을 '~합니다.' 문장형으로 통일하고 마침표 추가 — 좁은 드롭다운의 짧은 문구까지</td><td class="ch-st">반영(보관)</td></tr>
-        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">'지식함에 넣기' 완료 시 해당 지식을 '불러온 지식' 섹션으로 이동 — 삭제 라벨·출처 표시도 함께 전환</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">'지식함에 넣기' 완료 시 해당 지식을 '불러온 지식' 섹션으로 이동 — 삭제 라벨·출처 표시도 함께 전환</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">완전 삭제</td><td class="ch-ch">지식 삭제를 '지식 삭제' 하나로 통일하고 업로드 건의 확인 모달·ⓘ 툴팁 제거 — 원본 파일은 남으므로 바로 빼기</td><td class="ch-st">반영(보관)</td></tr>
-        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">내가 올린 지식을 지식함에 넣어도 메타를 '내가 올림' 그대로 유지 — '지식함에서 가져옴'으로 덮어쓰지 않게</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">내가 올린 지식을 지식함에 넣어도 메타를 '내가 올림' 그대로 유지 — '지식함에서 가져옴'으로 덮어쓰지 않게</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">오늘</td><td class="ch-ch">AI 지식 '업로드한 지식' 항목의 '내가 올림'·'지식 작성' 출처 멘트를 지우고 날짜만 남김</td><td class="ch-st">반영(보관)</td></tr>
-        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">김민지 올림 · 6/12</td><td class="ch-ch">협업 지식 패널 메타를 '누가 올림 · 날짜' 형식으로 통일 — '지식함에서 가져옴' 제거</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내가 올림</td><td class="ch-ch">지식함 올리기로 불러온 지식 이동 시 '내가 올림 · 오늘'로 갱신 + 업로드 지식 라벨 통일</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">김민지 올림 · 6/12</td><td class="ch-ch">협업 지식 패널 메타를 '누가 올림 · 날짜' 형식으로 통일 — '지식함에서 가져옴' 제거</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">오늘</td><td class="ch-ch">업로드한 지식 항목의 '내가 올림' 숨기고 날짜만 — 불러온 지식에선 '내가 올림' 유지</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">#kbChat .krow .keye</td><td class="ch-ch">눈 아이콘 툴팁을 'AI가 지식으로 활용 중 / 활용 안 함'으로 간결화</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">내 파일을 지식으로 업로드합니다.</td><td class="ch-ch">지식 추가 메뉴 설명 끝 마침표 제거 — '내 파일을 지식으로' / '지식을 직접 작성'</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">개의 지식 활용 중</td><td class="ch-ch">'N개의 지식 활용 중' 문구 클릭 시 그 패널의 '활용 중' 필터로 전환</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">김혜진 올림 · 6/12</td><td class="ch-ch">불러온 지식 메타를 '[올린이] 올림 · 날짜'로 통일 — 날짜 포함 여부 확인</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">질문 리스트</td><td class="ch-ch">대화 목차 → '질문 리스트' 문구로 변경 (헤더·검색·버튼 툴팁)</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">질문을 누르면 해당 위치로 이동해요.</td><td class="ch-ch">질문 리스트 패널 제목 아래에 클릭 이동 가이드 문구 추가</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">#chSearchBtn</td><td class="ch-ch">검색을 '대화 텍스트 / 내 질문' 2탭으로 통합, 질문 리스트 버튼 흡수</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">#lnbSep3</td><td class="ch-ch">AI채팅 LNB의 그룹·AI채팅 섹션 라벨 위에 AI 지식 패널과 같은 가로 구분선 추가 + 접어도 유지되게 분리</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">휴지통</td><td class="ch-ch">LNB 바닥 여백을 .pane-l 공통 규칙으로 올려 6개 화면 전부 12px 통일 (화면별 선택자 제거)</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai">AI 채팅</a></td><td class="ch-el">휴지통으로 이동</td><td class="ch-ch">⋯ 메뉴에서 완전 삭제를 빼고 휴지통으로 이동만 남김 — 완전 삭제는 휴지통 화면 전용</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/chats">AI 채팅 · chats</a></td><td class="ch-el">기본 — 표준 샘플 데이터</td><td class="ch-ch">꽉참 데모 대화에 날짜·요약이 없어 행 모습이 기본 데이터와 달라지던 문제 — 원천에 채워 넣기</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/chats">AI 채팅 · chats</a></td><td class="ch-el">#chatsList</td><td class="ch-ch">채팅 전체보기·그룹 전체보기 행도 호버하면 날짜가 ⋯ 메뉴 버튼으로 바뀌게</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/chats">AI 채팅 · chats</a></td><td class="ch-el">#chatsList</td><td class="ch-ch">꽉참 AI채팅 전체보기의 전용 렌더 분기를 없애 카드 모양·최신순 정렬을 일반 상태와 통일</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/chats">AI 채팅 · chats</a></td><td class="ch-el">그룹</td><td class="ch-ch">'그룹에서 제거'를 그룹 상세에서만 노출 — 전체보기·그룹리스트에선 숨김</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/group/%EA%B0%9C%EC%9D%B8%20%EA%B3%B5%EB%B6%80">AI 채팅 · group/개인 공부</a></td><td class="ch-el">그룹</td><td class="ch-ch">더보기는 버튼을 시야에 유지, 접기는 즐겨찾기 머리로 스크롤</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/group/%EC%82%AC%EC%97%85%EA%B3%84%ED%9A%8D">AI 채팅 · group/사업계획</a></td><td class="ch-el">#grpFavBtn</td><td class="ch-ch">그룹 화면 헤더에 즐겨찾기 별과 동작하는 ⋯ 메뉴 추가 + 더보기 아이콘을 전부 가로 점으로 통일</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#ai/group/%EC%A3%BC%EC%8B%9D%20%EB%A6%AC%EC%84%9C%EC%B9%98">AI 채팅 · group/주식 리서치</a></td><td class="ch-el">AI 지식</td><td class="ch-ch">그룹 채팅 뷰에서 AI 지식 패널 제거 (그룹 소스 삭제로 무의미해져)</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/group/%EC%A3%BC%EC%8B%9D%20%EB%A6%AC%EC%84%9C%EC%B9%98">AI 채팅 · group/주식 리서치</a></td><td class="ch-el">휴지통으로 이동</td><td class="ch-ch">그룹 ⋯ 메뉴의 완전 삭제도 함께 빠졌음을 확인하고 두 항목이 같이 있는 다른 곳을 전수 점검</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/new">AI 채팅 · new</a></td><td class="ch-el">새 AI채팅 그룹</td><td class="ch-ch">새 그룹 모달 제목을 '새 AI채팅 그룹'으로 바꿔 어떤 그룹인지 제목이 직접 말하게</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#ai/trash">AI 채팅 · trash</a></td><td class="ch-el">#aiViewTrash .trash-note svg</td><td class="ch-ch">휴지통 안내 아이콘을 느낌표(!)에서 정보(i)로 뒤집고 크기·굵기·색을 올려 또렷하게</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">협업 AI지식</td><td class="ch-ch">협업 패널명을 '협업 지식'에서 '협업 AI지식'으로 변경</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">업로드한 지식</td><td class="ch-ch">협업 패널 '내 지식' 섹션을 '업로드한 지식'으로 변경 — 파일메뉴 '담기' 문구 정렬 여부 확인</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">파일 내역</td><td class="ch-ch">방-중립 표현을 '대화'로 정리 — 채널 33곳 검토해 그룹채널 특정어만 유지</td><td class="ch-st">반영(보관)</td></tr>
@@ -2993,13 +3054,18 @@ Authorization: Bearer ****</code></pre>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">지식함</td><td class="ch-ch">지식함=책 아이콘과 지식 불러오기=클라우드 아이콘의 일관성 확인 — 메뉴는 '동작', 내비는 '장소'라 별개 축(현행 유지 권장)</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">#kbCollab .slabel .kbsec-tw</td><td class="ch-ch">협업 지식 패널 섹션 접기 셰브론을 AI채팅과 동일 스타일로 통일</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">미리보기</td><td class="ch-ch">파일 미리보기(#kbTextPrev)를 하단 오버레이 레이어로 — 첨부 파일 밀어올림 해소</td><td class="ch-st">반영(보관)</td></tr>
-        <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">비공개 채널</td><td class="ch-ch">비공개 채널 기능 제거 — 새 채널 모달의 선택 옵션과 자물쇠 표시 전부</td><td class="ch-st">반영</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">비공개 채널</td><td class="ch-ch">비공개 채널 기능 제거 — 새 채널 모달의 선택 옵션과 자물쇠 표시 전부</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#collab">협업</a></td><td class="ch-el">대화 텍스트</td><td class="ch-ch">'내 질문' 탭을 AI 채팅에서만 노출 — 협업·이메일에선 탭 줄째 숨김</td><td class="ch-st">반영(보관)</td></tr>
         <tr><td class="ch-scr"><a class="chg-go" href="#dash">수정사항</a></td><td class="ch-el">눌러도 창이 안 열리던</td><td class="ch-ch">수정사항에서 '메뉴 클릭 복구' 항목 제거 — V2 작업 중 생긴 버그 수정이라 V1→V2 변경이 아님(AI 채팅 카운트 6→5)</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#dash">수정사항</a></td><td class="ch-el">업데이트</td><td class="ch-ch">변경 이력 모달에 [업데이트] 버튼 추가 — 서버가 스크립트를 돌려 표·문서 자동 갱신</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#dash">수정사항</a></td><td class="ch-el">V2 변경 내역</td><td class="ch-ch">변경 이력 모달 제목을 'V2 변경 내역'으로, 푸터 문구도 V2 기준으로 변경</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#dash">수정사항</a></td><td class="ch-el">원본 변경 내역 전체보기</td><td class="ch-ch">'원본 변경 내역 전체보기' 아래 여백 18px — 카드와 붙던 것 분리</td><td class="ch-st">반영(보관)</td></tr>
+        <tr><td class="ch-scr"><a class="chg-go" href="#dash">수정사항</a></td><td class="ch-el">수정</td><td class="ch-ch">수정사항 머리 우측에 문서 최종 수정 일시 표시</td><td class="ch-st">반영(보관)</td></tr>
         <!-- CHG-HIST:END -->
         </tbody>
       </table>
     </div>
-    <div class="modal-foot" style="display:flex;align-items:center;gap:12px"><span>V2에 반영된 변경만 모았습니다 (총 <b id="chgHistCnt">42</b>건). 코멘트를 처리할 때마다 원장에 쌓입니다.</span><button class="btn btn-sec btn-sm" id="chgHistUpd" style="margin-left:auto;flex-shrink:0">업데이트</button></div>
+    <div class="modal-foot" style="display:flex;align-items:center;gap:12px"><span>V2에 반영된 변경만 모았습니다 (총 <b id="chgHistCnt">68</b>건). 코멘트를 처리할 때마다 원장에 쌓입니다.</span><button class="btn btn-sec btn-sm" id="chgHistUpd" style="margin-left:auto;flex-shrink:0">업데이트</button></div>
   </div>
 </div>
 
@@ -3201,6 +3267,15 @@ document.querySelectorAll('.rail-btn[data-s]').forEach(b=>{
 });
 // 수정사항 페이지의 [보기 →] → 해당 레일 버튼 클릭으로 화면 이동 (hashchange 리스너가 없어 href만으론 전환 안 됨, c-027)
 document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('.cgo');if(!a)return;e.preventDefault();var key=(a.getAttribute('href')||'').replace('#','').split('/')[0];var btn=document.querySelector('.rail-btn[data-s="'+key+'"]');if(btn)btn.click();});
+// 수정사항 머리에 이 문서가 마지막으로 수정된 시각 (c-074)
+// document.lastModified 는 file:// 이면 파일 mtime, http 로 열면 Last-Modified 헤더에서 온다.
+// 헤더가 없는 서버로 열면 브라우저가 '지금'을 돌려주므로, 그 경우 시각이 열 때마다 바뀐다.
+(function(){var el=document.getElementById('dashMtime');if(!el)return;
+  var d=new Date(document.lastModified);
+  if(isNaN(d)){el.textContent='';return;}
+  var p=function(n){return String(n).padStart(2,'0');};
+  el.textContent=d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+' 수정';
+})();
 // 수정사항 원본 히스토리 모달 (c-027) — 버튼으로 열고, 표의 화면명 클릭 시 그 화면으로 이동+모달 닫기
 (function(){var m=document.getElementById('chgHistModal');if(!m)return;
   var op=document.getElementById('chgHistBtn');if(op)op.addEventListener('click',function(){m.hidden=false;});
@@ -3708,7 +3783,7 @@ const LAB_AXES={
   homeLayout:{scalar:['top','bottom','center'],def:'top',
     get:()=>(typeof homeLayout!=='undefined'?homeLayout:'top'),
     set:v=>{if(typeof homeLayout==='undefined')return;homeLayout=v;if(typeof homeLayoutApply==='function')homeLayoutApply();}},
-  viewLayout:{fields:{grps:['a','b','c'],chats:['a','b'],trash:['a','b']},def:{grps:'a',chats:'a',trash:'a'},
+  viewLayout:{fields:{grps:['a','b','c','d'],chats:['a','b'],trash:['a','b']},def:{grps:'a',chats:'a',trash:'a'},
     get:()=>(typeof viewLayout!=='undefined'?{...viewLayout}:{grps:'a',chats:'a',trash:'a'}),
     set:v=>{if(typeof viewLayout==='undefined')return;Object.assign(viewLayout,v);if(typeof viewLayoutApply==='function')viewLayoutApply();}},
   gnb:{fields:{mode:['rail','wide'],place:['rail','top','split','splitbar'],size:['m','l','xl','custom'],
@@ -3754,7 +3829,7 @@ const LAB_DEFAULT={
   am:{layout:'line',soon:false,foot:false,chat:false,text:true,width:'wide'},
   crow:{sum:false,spark:true,mark:'icon',sumpos:'below',layout:'clean',cleanDate:true,cleanType:true,cleanGroup:true},
   homeLayout:'center',
-  viewLayout:{grps:'c',chats:'a',trash:'a'},
+  viewLayout:{grps:'d',chats:'a',trash:'a'},
   gnb:{mode:'rail',place:'split',size:'custom',custom:{w:72,ic:21},hier:'none',lnbhead:false,sel:'round',tb:'full',lnbctl:'inhead',lnbmode:'icon',lnbanim:'fade',tipDelay:0,wideW:216,maxW:250,min:'label',util:true,scroll:'hover',colic:'panel',lnbv:'newv'},
   icon:{grp:'folder',chat:'sparkle'}
 };
@@ -4181,7 +4256,36 @@ function renderGroupsGrid(q){
   if(gnbState.empty){list.innerHTML=emptyST(ICON.folder,'아직 그룹이 없어요','관련된 AI채팅을 묶을 그룹을 만들어 보세요.','＋ 새 그룹');document.getElementById('grpsCount').textContent='총 0개';return;}
   const entries=Object.entries(GRP_DATA).filter(([name])=>!q||name.toLowerCase().includes(q.toLowerCase()));
   const sortedEntries=entries.slice().sort(grpsCmp());
-  if(viewLayout.grps==='c'){
+  if(viewLayout.grps==='d'){ // 시안 D — 표형 (c-071): 이름·수·날짜·즐겨찾기를 각자 열로
+    const STAR='<svg viewBox="0 0 24 24"><path d="M12 2.6l2.95 5.98 6.6.96-4.78 4.65 1.13 6.58L12 17.67l-5.9 3.1 1.13-6.58-4.78-4.65 6.6-.96z"/></svg>';
+    const tb=document.createElement('div');tb.className='vv-gtable';
+    tb.innerHTML='<div class="vv-gthead"><div>이름</div><div>AI채팅</div><div>소스</div><div>최근 활동</div>'
+      +'<div style="text-align:center">즐겨찾기</div><div></div></div>';
+    sortedEntries.forEach(([name,d])=>{shown++;
+      const r=document.createElement('div');r.className='vv-gtrow';
+      r.innerHTML='<div class="nm">'+grpIcon()+'<span class="t"></span></div>'
+        +'<div class="col num"></div><div class="col num"></div><div class="col"></div>'
+        +'<div style="display:grid;place-items:center"><button class="vv-gfav" type="button">'+STAR+'</button></div>';
+      // 마지막 ⋯ 열은 addRowMore 가 채운다 — 여기서 빈 div 를 두면 열이 하나 넘쳐 행이 접힌다
+      r.querySelector('.nm .t').textContent=name;
+      const cols=r.querySelectorAll('.col');
+      cols[0].textContent=d.sessions.length;
+      cols[1].textContent=d.sources.length||'–';   // 0 은 '–' 로 — 숫자 0 이 줄줄이 서면 눈이 걸린다
+      cols[2].textContent=GRP_META[name]||'';
+      const fav=r.querySelector('.vv-gfav');
+      fav.classList.toggle('on',FAV_DATA.folders.includes(name));
+      fav.setAttribute('data-tip',FAV_DATA.folders.includes(name)?'즐겨찾기 해제':'즐겨찾기');
+      fav.addEventListener('click',e=>{e.stopPropagation(); // 행 클릭(그룹 열기)과 겹치지 않게
+        const i=FAV_DATA.folders.indexOf(name);
+        if(i<0){FAV_DATA.folders.push(name);labSay('"'+name+'" 그룹을 즐겨찾기에 추가했어요');}
+        else{FAV_DATA.folders.splice(i,1);labSay('즐겨찾기에서 제거했어요');}
+        if(typeof grpRowsRefresh==='function')grpRowsRefresh();  // LNB 즐겨찾기 섹션도 같이
+        renderGroupsGrid(q);});
+      r.addEventListener('click',()=>openGroup(name));
+      tb.appendChild(r);addRowMore(r); // 호버 ⋯ — 마지막 열이 그 자리
+    });
+    list.appendChild(tb);
+  }else if(viewLayout.grps==='c'){
 
     const sorted=sortedEntries; const useBucket=(chatsField==='time');
     let cur=null;
@@ -4222,6 +4326,7 @@ function renderGroupsGrid(q){
 }
 function openGroupsPage(){
   const q=document.getElementById('grpsQ');if(q)q.value='';
+  if(typeof grpsLayoutSync==='function')grpsLayoutSync(); // 시안 버튼을 현재 상태에 맞춰 켠다
   renderGroupsGrid('');
   aiView('aiViewGroups');aiActive(null);
 }
@@ -4229,6 +4334,12 @@ const grpsAllRow=document.getElementById('grpsAllRow');
 if(grpsAllRow)grpsAllRow.addEventListener('click',()=>{openGroupsPage();aiActive(grpsAllRow);});
 const grpsQ=document.getElementById('grpsQ');
 if(grpsQ)grpsQ.addEventListener('input',()=>renderGroupsGrid(grpsQ.value.trim()));
+// 그룹 전체보기 시안 전환 (c-071) — 누르면 그 자리에서 다시 그린다
+document.querySelectorAll('.grps-layout [data-glay]').forEach(b=>b.addEventListener('click',()=>{
+  viewLayout.grps=b.dataset.glay;
+  if(typeof viewLayoutApply==='function')viewLayoutApply();
+  grpsLayoutSync();renderGroupsGrid(grpsQ?grpsQ.value.trim():'');}));
+function grpsLayoutSync(){document.querySelectorAll('.grps-layout [data-glay]').forEach(b=>b.classList.toggle('on',b.dataset.glay===viewLayout.grps));}
 
 const grpsNewBtn=document.getElementById('grpsNewBtn');
 if(grpsNewBtn)grpsNewBtn.addEventListener('click',e=>{
