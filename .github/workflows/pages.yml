@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: 배포 시각 주입 (KST)
+        run: |
+          STAMP=$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')
+          echo "stamp: $STAMP"
+          find . -name 'index.html' -not -path './.git/*' -print0 \
+            | xargs -0 sed -i "s/__DEPLOY_TIME__/$STAMP/g"
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
