@@ -4645,7 +4645,7 @@ const LAB_DEFAULT={
   viewLayout:{grps:'c',chats:'a',trash:'a'},
   // colic: 접기·펼치기 아이콘 — 'panel'(네모+화살표)에서 화살표만 남는 'chev1'(단일 셰브런 ‹ ›)로 바꿨다 (c-056).
   // LAB > 공통(셸) > 접기·펼치기 아이콘에서 이중 셰브런 « »·패널 토글로 언제든 되돌릴 수 있다.
-  gnb:{mode:'rail',place:'split',size:'custom',custom:{w:72,ic:21},hier:'none',lnbhead:false,sel:'round',tb:'full',lnbctl:'inhead',lnbmode:'icon',lnbanim:'fade',tipDelay:0,wideW:216,maxW:250,min:'label',util:true,scroll:'hover',colic:'chev1',lnbv:'newv'},
+  gnb:{mode:'rail',place:'split',size:'custom',custom:{w:72,ic:21},hier:'none',lnbhead:false,sel:'round',tb:'full',lnbctl:'inhead',lnbmode:'icon',lnbanim:'fade',tipDelay:0,wideW:216,maxW:250,min:'label',util:true,scroll:'hover',colic:'panel',lnbv:'newv'},
   icon:{grp:'folder',chat:'sparkle'}
 };
 function labResetAll(){labApplyAll(JSON.parse(JSON.stringify(LAB_DEFAULT))); // 2026-07-20 JH: 기본값(LAB_DEFAULT) 복귀
