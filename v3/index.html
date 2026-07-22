@@ -236,6 +236,8 @@ body.sel-flat .member{margin:2px 0;border-radius:0;padding:0 18px}
 #railColTop svg{width:18px;height:18px}
 .rail.wide #railColTop{width:30px;align-self:flex-end} /* 확장 시 우측 정렬 (레일 패딩 10px이 여백) */
 .rail-btn[data-s="admin"]{display:none}
+/* 수정사항(리뷰용 변경 요약)은 제품 메뉴에서 뺀다 (c-210) — 링크(#dash)로는 그대로 열린다. */
+.rail-btn[data-s="dash"]{display:none}
 .ofv-seg{width:168px;flex-shrink:0;margin:0;align-self:center}
 .rail-rsz{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;z-index:3;display:none}
 .rail.gnb-exp .rail-rsz,.rail-rsz.drag{display:block} /* 확장형 모드면 최소화 상태에서도 핸들 노출 */
@@ -2542,10 +2544,10 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
   <nav class="rail">
     <button class="rail-btn" id="railColTop" hidden>
       <svg viewBox="0 0 24 24"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
-    <button class="rail-btn on" data-s="dash" title="수정사항">
+    <button class="rail-btn" data-s="dash" title="수정사항">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
       <span>수정사항</span></button>
-    <button class="rail-btn" data-s="ai">
+    <button class="rail-btn on" data-s="ai">
       <svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg>
       <span>AI채팅</span></button>
     <button class="rail-btn" data-s="collab">
@@ -2607,7 +2609,7 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
   <div class="stage">
 
   <!-- ═══════ ① 대시보드 ═══════ -->
-  <section class="screen on" id="s-dash">
+  <section class="screen" id="s-dash">
     <div class="dash" style="width:100%">
       <div class="dash-in">
       <div class="dash-hello">수정사항<span class="dash-mtime" id="dashMtime"></span></div>
@@ -2667,7 +2669,7 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
   </section>
 
   <!-- ═══════ ② AI채팅 ═══════ -->
-  <section class="screen" id="s-ai">
+  <section class="screen on" id="s-ai">
     <aside class="pane-l">
       <!-- 기능 리스트 — GPT식 상단 행 (새 대화 · 채팅 검색) -->
       <div class="lnb-sp"></div>
@@ -4521,7 +4523,8 @@ gnbApply();
 const brand=document.getElementById('brandHome');
 if(brand)brand.addEventListener('click',()=>{
   if(lnbMin&&gnbState.lnbctl==='brand'&&gnbState.lnbmode!=='icon'){lnbMinSet(false);return;}
-  const d=document.querySelector('.rail-btn[data-s="dash"]');if(d)d.click();
+  // 홈은 AI채팅으로 (c-210) — 수정사항을 제품 메뉴에서 뺐으니 로고 클릭도 첫 제품 화면으로.
+  const d=document.querySelector('.rail-btn[data-s="ai"]');if(d)d.click();
 });
 amApply(); // 데모 초기 렌더 (표시는 OFF 상태로 대기)
 
@@ -4655,7 +4658,7 @@ const FULL_DB=[
 ];
 const FULL_LONG='2026년 상반기 글로벌 전력기기·변압기 수출입 동향 및 관세·통관 리스크 종합 분석 리포트(초장문 제목 엣지 케이스)';
 // 내부 뷰 → 해시 서브키 (#ai/groups 등) — 새로고침 복원 + redline 코멘트의 page가 하위 뷰까지 구분 (2026-07-17)
-const AI_SUB={aiViewChat:'',aiViewNew:'new',aiViewGroup:'group',aiViewGroups:'groups',aiViewChats:'chats',aiViewTrash:'trash'};
+const AI_SUB={aiViewChat:'chat',aiViewNew:'',aiViewGroup:'group',aiViewGroups:'groups',aiViewChats:'chats',aiViewTrash:'trash'};
 function aiSubHash(sub){
   if(!document.getElementById('s-ai').classList.contains('on'))return; // AI채팅 화면일 때만
   history.replaceState(null,'','#ai'+(sub?'/'+sub:''));}
@@ -9068,10 +9071,14 @@ mailRender();flowRender();orgRender();aiTocBuild();
 
 // 내부 뷰 해시 복원 (#ai/groups, #know/mine/파일 등) — 상단 라우터는 화면까지만 켜고, 하위 뷰는 함수 정의가 끝난 여기서 적용 (2026-07-17)
 (function(){
-  const key=window.__hashKey,s=window.__hashSub;if(!s||!s.length)return;
+  const key=window.__hashKey,s=window.__hashSub;
+  // AI채팅의 루트(#ai)는 존재하지 않는 예시 대화가 아니라 새 채팅으로 시작한다 (c-211).
+  if((!key||key==='ai')&&(!s||!s.length)){aiView('aiViewNew');aiActive(aiNewBtn);return;}
+  if(!s||!s.length)return;
   if(key==='ai'){
     const sub=s[0];
-    if(sub==='new'){aiView('aiViewNew');aiActive(aiNewBtn);}
+    if(sub==='chat'){aiView('aiViewChat');}
+    else if(sub==='new'){aiView('aiViewNew');aiActive(aiNewBtn);}
     else if(sub==='groups'){openGroupsPage();aiActive(document.getElementById('grpsAllRow'));}
     else if(sub==='chats'){openChatsPage();aiActive(document.getElementById('chatsAllRow'));}
     else if(sub==='trash'){openTrashPage();}
