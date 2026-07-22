@@ -673,7 +673,15 @@ body.gnb-split .chead,body.gnb-top .chead{border-bottom:none}
 .ctx-pop .ctx-add .am-item{padding:8px 10px;gap:9px}
 .ctx-pop .ctx-add .am-item b{font-weight:400;font-size:var(--fs-ui)}
 .ctx-pop .ctx-add .am-item > svg{width:16px;height:16px}
+/* 협업 AI 참고 층 업로드 줄 (c-216) — 새 AI채팅 층과 같은 모양이되 전역 .am-item 위임을 안 타게 클래스만 다르다 */
+.ctx-pop .ctx-add .co-refup{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r-item);cursor:pointer}
+.ctx-pop .ctx-add .am-item.hi,.ctx-pop .ctx-add .co-refup:hover,.ctx-pop .ctx-add .co-refup.hi,.ctx-pop .ctx-row.hi{background:var(--hover)}
+.ctx-pop .ctx-add .co-refup > svg{width:16px;height:16px;stroke:var(--ink);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ctx-pop .ctx-add .co-refup b{font-size:var(--fs-ui);font-weight:400}
 .ctx-sep{height:1px;background:var(--border-l);margin:6px 4px}
+/* c-222 — 선택 층 맨 아래에 키보드 탐색법을 낮은 위계로 안내 */
+.ctx-keyhint{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin:5px 4px 1px;padding:7px 6px 1px;border-top:1px solid var(--border-l);font-size:11px;color:var(--text-3)}
+.ctx-keyhint kbd{min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 4px;border:1px solid var(--border-d);border-radius:5px;background:var(--surface-2);color:var(--text-2);font:inherit;font-size:10px;line-height:1}
 .ctx-btn:hover{background:var(--hover);color:var(--ink)}
 .ctx-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6}
 /* 개수는 채운 배지가 아니라 그냥 검정 숫자 (c-097) — 배지는 '알림이 왔다'는 뜻으로 읽히는데
@@ -714,6 +722,7 @@ body.gnb-split .chead,body.gnb-top .chead{border-bottom:none}
 .ctx-row.on .ctx-chk{background:var(--ink);border-color:var(--ink);color:var(--canvas)}
 .ctx-row .ctx-nm{flex:1;min-width:0;font-size:var(--fs-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ctx-empty{padding:10px;font-size:var(--fs-cap);color:var(--text-3);text-align:center} /* 층·넓은 창 공용 (c-129) */
+#heroCtxList .ctx-empty{padding:10px 8px;color:var(--text-3);opacity:.72;text-align:left;line-height:1.55} /* c-220 — 앞의 + 오타로 규칙이 통째로 무효였다(그래서 계속 가운데였음). 제거해 왼쪽 정렬·옅게 적용 */
 /* 전체 선택 줄 (c-136) — 목록과 같은 모양, 다만 목록 위에 얹힌 것이라 옅은 선으로 가른다 */
 .ctx-allrow{padding:4px 8px;border-bottom:1px solid var(--border-l)}
 .ctx-allrow .ctx-nm{color:var(--text-2)}
@@ -748,6 +757,7 @@ body.gnb-split .chead,body.gnb-top .chead{border-bottom:none}
   border:1px solid var(--border-l);border-radius:var(--r-2xl);padding:6px;display:none;
   box-shadow:0 4px 24px rgba(0,0,0,.06)}
 .attach-menu.open{display:block}
+.attach-menu .am-cap{padding:6px 10px 4px;font-size:var(--fs-cap);color:var(--text-3)}
 /* 아래 방향: 새 채팅 히어로처럼 위 공간이 부족한 곳 — 버튼 아래로 펼침 */
 .attach-menu.v-down{top:calc(100% + 8px);bottom:auto}
 /* 변형 A: 박스 아이콘 · 2줄 (구 버전) */
@@ -1602,20 +1612,19 @@ html[data-theme="dark"] .kfpage{background:#e9e9ec}
 .co-mnt-it .co-mnt-role{color:var(--text-3);font-size:var(--fs-cap);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 입력창 '같은 줄' — ＋ 뒤에 [@이름][AI 참고]가 서고 그 옆으로 글을 쓴다 (c-198 재요청 2).
    별도 줄을 만들지 않으므로 wrap 없이 한 행으로 흐른다. */
-#s-collab .composer-box>.co-aibar{margin:0;border:none;background:transparent;padding:0;gap:4px;flex-shrink:0;align-self:center} /* 입력창 세로 가운데 (c-198 재요청 3) */
+#s-collab .composer-box>.co-aibar{margin:0;border:1px solid var(--border-l);background:transparent;padding:2px 4px 2px 9px;gap:3px;border-radius:9999px;flex-shrink:0;align-self:center} /* c-224 — @AI·참고·×를 큰 회색 배지 대신 얇은 한 묶음으로 */
 .co-aibar{display:flex;align-items:center;gap:7px;padding:5px 10px;margin-bottom:6px;border:1px solid var(--border-l);border-radius:12px;background:var(--surface-2);font-size:var(--fs-ui)}
 /* 같은 줄에 서는 것은 딱 둘 — [@이름] 알약과 [AI 참고] 아이콘 (c-198 재요청 2).
    '에게 질문 · 참고 없이…' 문구·별·취소(×)는 줄을 먹으므로 숨긴다. 해제는 알약의 ×로. */
 #s-collab .composer-box>.co-aibar>span:first-of-type{display:inline-flex;align-items:center;gap:0;font-size:0}
-#s-collab .composer-box>.co-aibar>span:first-of-type b{display:inline-flex;align-items:center;gap:5px;background:var(--surface-3);color:var(--accent);border-radius:9999px;padding:5px 6px 5px 11px;font-weight:600;font-size:var(--fs-ui);white-space:nowrap} /* 크기 키움 (c-198 재요청 3) */
+#s-collab .composer-box>.co-aibar>span:first-of-type b{display:inline-flex;align-items:center;color:var(--accent);padding:0;font-weight:600;font-size:var(--fs-ui);white-space:nowrap} /* c-224 — 바깥 묶음이 경계를 맡아 이름의 중복 배경 제거 */
 #s-collab .composer-box>.co-aibar>span:first-of-type b::before{content:'@'}
 #s-collab .composer-box>.co-aibar>span:first-of-type .co-aihint{display:none}
 #s-collab .composer-box>.co-aibar>svg,#s-collab .composer-box>.co-aibar>.sp{display:none}
-/* 취소(×)를 알약 안 작은 손잡이로 — 별도 자리를 안 먹는다 */
-#s-collab .composer-box>.co-aibar>.co-aix{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-#s-collab .composer-box>.co-aibar .co-badge-x{display:inline-grid;place-items:center;width:18px;height:18px;border:none;background:transparent;border-radius:9999px;color:var(--accent);cursor:pointer;padding:0}
-#s-collab .composer-box>.co-aibar .co-badge-x:hover{background:var(--hover)}
-#s-collab .composer-box>.co-aibar .co-badge-x svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2}
+/* c-224 — 취소는 묶음의 맨 끝 손잡이. 이름 안에 넣지 않아 @AI → 참고 → × 순서가 읽힌다. */
+#s-collab .composer-box>.co-aibar>.co-aix{display:inline-grid;place-items:center;width:24px;height:24px;flex:none;border:none;background:transparent;border-radius:9999px;color:var(--text-3);cursor:pointer;padding:0}
+#s-collab .composer-box>.co-aibar>.co-aix:hover{background:var(--hover);color:var(--ink)}
+#s-collab .composer-box>.co-aibar>.co-aix svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
 .co-aibar>svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.7;flex-shrink:0}
 .co-aibar .sp{flex:1}
 .co-aibar .co-refbtn{border:1px solid var(--border-l);background:var(--canvas);border-radius:8px;padding:2px 9px;font-size:var(--fs-cap);cursor:pointer;color:var(--text-2)}
@@ -1625,7 +1634,20 @@ html[data-theme="dark"] .kfpage{background:#e9e9ec}
 .co-aibar .co-aix svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
 /* 바 안에 서는 AI 참고 버튼 — 바 높이에 맞춰 축소 (c-178).
    이름 문구 옆으로 오면서(c-198) 문구에 밀려 라벨이 0폭으로 눌렸다 — 줄어들지 않게 고정한다. */
-.co-aibar .ctx-btn{height:32px;padding:0 11px;margin-right:2px;flex-shrink:0;white-space:nowrap} /* 뱃지와 같은 높이로 키움 (c-198 재요청 3) */
+/* AI 참고는 평소 접혀 있다가 바에 호버(발견)하거나 참고가 걸려 있을 때(사용 중)만 펼친다 (c-224 재요청).
+   — 그냥 빼지 않는다. 공간은 줄이되 언제든 호버로 닿을 수 있어야 한다. */
+.co-aibar .ctx-btn{height:26px;margin:0;flex-shrink:0;white-space:nowrap;border-color:transparent;background:transparent;
+  max-width:0;padding:0;opacity:0;overflow:hidden;
+  transition:max-width .2s ease,opacity .15s ease,padding .2s ease,background .15s ease}
+#s-collab .composer-box>.co-aibar:hover .ctx-btn,
+#s-collab .composer-box>.co-aibar .ctx-btn.on,
+#s-collab .composer-box>.co-aibar .ctx-btn.open{max-width:130px;opacity:1;padding:0 7px}
+/* 묶음 어디에 호버해도 라벨까지 즉시 펼친다 — 아이콘 자리를 다시 찾아 호버할 필요가 없다. */
+#s-collab .composer-box>.co-aibar:hover .ctx-btn .ctx-lbl{max-width:64px;opacity:1;margin-left:5px}
+/* 사용 중 = 활성 효과: 은은한 면 + accent (작게 — 큰 회색배지로 세트 전체를 감싸지 않는다) */
+#s-collab .composer-box>.co-aibar .ctx-btn.on{background:var(--surface-3);color:var(--accent)}
+/* 활성이면 라벨('AI 참고 중')도 함께 보인다 — 무엇이 켜졌는지 글자로도 읽히게 */
+.co-aibar .ctx-btn.on .ctx-lbl{max-width:72px;opacity:1;margin-left:5px}
 #s-collab .composer-box>.co-aibar .ctx-btn svg{width:17px;height:17px} /* 지식 아이콘이 너무 작았다 */
 #s-collab .composer-box>.co-aibar .ctx-btn .ctx-n{font-size:var(--fs-cap)}
 .co-aibar>span:first-of-type{min-width:0;flex-shrink:1} /* 좁아지면 버튼 대신 이름 문구가 줄어든다 */
@@ -2781,7 +2803,7 @@ Authorization: Bearer ****</code></pre>
                  확인이 끝나면 이 줄과 아래 스크립트의 ctxDemo 블록만 지우면 된다. -->
             <button class="ctx-demo" id="ctxDemo">테스트: 파일 10개 넣기</button>
             <!-- 두 칸의 이름을 '무엇을 하는가'로 맞췄다 (c-123): 위=새로 더하기, 아래=이미 있는 것에서 고르기 -->
-            <div class="ctx-cap">AI가 참고할 파일 업로드</div>
+            <div class="ctx-cap">AI가 참고할 문서 업로드</div>
             <div class="ctx-add">
               <div class="am-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><b>내 PC에서 업로드</b></div>
               <div class="am-item"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.5-7.97A6 6 0 0118 8.5a3.5 3.5 0 011 6.85"/><path d="M12 11v8M8.5 15.5L12 19l3.5-3.5"/></svg><b>문서에서 업로드</b></div>
@@ -2809,9 +2831,23 @@ Authorization: Bearer ****</code></pre>
 
             <div class="home-greet">무엇을 도와드릴까요?</div>
             <div class="composer-box" style="position:relative">
-
-              <div class="attach-menu v-down" id="attachMenuNew"></div>
-              <button class="circle-ghost" id="heroPlus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+              <!-- 아래 대화 입력창(#ctxBtn·#ctxPop)과 같은 'AI 참고' 버튼·층 (c-212).
+                   새 채팅이라 목록은 비어 있고 켜진 것도 없다 — 첫 문서를 올리면 여기에 선다. -->
+              <!-- 아래 대화 입력창(#ctxPop)과 같은 두 층 구성 (c-216 재요청) — 이게 '새 AI채팅 버전'.
+                   위=새로 올리기(3종) · 아래=이미 올린 문서에서 고르기. 새 채팅이라 아래는 비어 시작. -->
+              <div class="ctx-pop" id="heroCtxPop" hidden>
+                <div class="ctx-cap">AI가 참고할 문서 업로드</div>
+                <div class="ctx-add">
+                  <div class="am-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><b>내 PC에서 업로드</b></div>
+                  <div class="am-item"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.5-7.97A6 6 0 0118 8.5a3.5 3.5 0 011 6.85"/><path d="M12 11v8M8.5 15.5L12 19l3.5-3.5"/></svg><b>문서에서 업로드</b></div>
+                  <div class="am-item"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><b>직접 작성</b></div>
+                </div>
+                <div class="ctx-sep"></div>
+                <div class="ctx-cap">AI가 참고할 문서 선택</div>
+                <div id="heroCtxList"></div>
+                <div class="ctx-keyhint"><kbd>↑</kbd><kbd>↓</kbd><span>이동</span><kbd>Enter</kbd><span>선택</span></div>
+              </div>
+              <button class="ctx-btn" id="heroCtxBtn" data-tip-align="left" data-tip="AI가 참고할 파일 선택"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg><span class="ctx-lbl">AI 참고</span><span class="ctx-n" id="heroCtxN"></span></button>
               <textarea rows="1" placeholder="무엇이든 물어보세요" id="heroIn"></textarea>
               <button class="circle-ink" id="heroSend"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
             </div>
@@ -2945,7 +2981,7 @@ Authorization: Bearer ****</code></pre>
         </div>
         <span style="display:flex;align-items:center;gap:2px;flex-shrink:0">
           <button class="co-allbtn" id="kbChatAllBtn" data-tip="AI 참고 문서 전체를 팝업으로">전체 보기</button>
-          <button class="ghost ctl30" id="kbChatAdd" data-tip="AI가 참고할 파일 업로드"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+          <button class="ghost ctl30" id="kbChatAdd" data-tip="AI가 참고할 문서 업로드"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
         </span>
         <div class="kbadd-drop" id="kbChatAddMenu" hidden>
           <div class="kb-addopt" data-add="upload"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><b>내 PC에서 업로드</b><span>내 컴퓨터에서 올려 첨부</span></div>
@@ -3019,7 +3055,7 @@ Authorization: Bearer ****</code></pre>
             <span class="kb-guide-t" hidden>AI가 참고 가능한 문서 리스트</span>
           </div>
           <span style="display:flex;align-items:center;gap:2px">
-            <button class="ghost ctl30" id="kbNewAdd" data-tip="AI가 참고할 파일 업로드"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+            <button class="ghost ctl30" id="kbNewAdd" data-tip="AI가 참고할 문서 업로드"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
             <button class="ghost kb-toggle ctl30" title="패널 접기"><svg viewBox="0 0 24 24"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg></button>
           </span>
           <!-- ＋ 메뉴는 kbChat과 같은 3입구 — 별도 '문서 ＋ 추가' 줄은 뺐다 (c-164, 제목 옆 ＋로 통일) -->
@@ -3154,11 +3190,11 @@ Authorization: Bearer ****</code></pre>
       <button class="newmsg" id="coNewMsg" hidden>↓ 새 메시지 1개</button>
       <div class="composer">
         <div class="composer-in">
-          <!-- 업로드 액션 다이얼로그 (요구사항 r14/r15) — 내 PC · 문서 · 직접 작성 -->
+          <!-- 멤버 공유용 업로드 액션 다이얼로그 (c-215) — 직접 작성은 제외 -->
           <div class="attach-menu" id="attachMenuCo">
+            <div class="am-cap">멤버 공유</div>
             <div class="am-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg><b>내 PC에서 업로드</b><span>내 컴퓨터에서 올려 대화에 첨부합니다.</span></div>
             <div class="am-item"><svg viewBox="0 0 24 24"><path d="M7 16a4 4 0 01-.5-7.97A6 6 0 0118 8.5a3.5 3.5 0 011 6.85"/><path d="M12 11v8M8.5 15.5L12 19l3.5-3.5"/></svg><b>문서에서 업로드</b><span>등록된 문서를 불러와 첨부합니다.</span></div>
-            <div class="am-item"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg><b>직접 작성</b><span>내용을 직접 작성하여 대화에 첨부합니다.</span></div>
           </div>
           <div class="composer-box">
             <button class="circle-ghost" id="coPlus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -6710,7 +6746,7 @@ function knowSearchClose(){var i=document.getElementById('knowSearchInline');if(
     var _cb=null;
     if(it.closest('.ctx-pop')&&window.kbChatAddDoc)_cb=function(names){(names||[]).forEach(function(n){
       var loc='미분류',sum='';try{kb:for(var ki in KNOW_DATA){var fs=(KNOW_DATA[ki]||{}).files||[];for(var j=0;j<fs.length;j++){if(fs[j].n===n){loc=(KNOW_DATA[ki].title)||ki;if(fs[j].b)sum=fs[j].b;break kb;}}}}catch(_){}
-      kbChatAddDoc(n,{inlib:true,loc:loc,summary:sum});});
+      kbChatAddDoc(n,{inlib:true,loc:loc,summary:sum,railId:it.closest('#heroCtxPop')?'kbNew':'kbChat'});});
       if(typeof labSay==='function')labSay((names||[]).length+'개 문서를 AI 참고 문서에 첨부했어요 (프로토타입)');};
     openM(_cb);}},true);
   modal.addEventListener('click',function(e){
@@ -6737,7 +6773,7 @@ function knowSearchClose(){var i=document.getElementById('knowSearchInline');if(
   document.addEventListener('click',function(e){var it=e.target.closest&&e.target.closest('.am-item');if(!it||it.classList.contains('soon'))return;var b=it.querySelector('b'),t=b?b.textContent:'';if(it.dataset.src==='pc'||t.indexOf('파일 업로드')>=0||t.indexOf('내 PC에서 업로드')>=0||t.indexOf('내 PC')>=0){e.stopPropagation();document.querySelectorAll('.attach-menu.open').forEach(function(m){m.classList.remove('open');});
     var _cb=null;
     if(it.closest('.ctx-pop')&&window.kbChatAddDoc)_cb=function(){ // AI채팅 입력창 문 → 레일에 데모 파일 (c-179)
-      kbChatAddDoc('현장_점검사진_요약.pdf',{summary:'내 PC에서 올린 파일 · AI 요약 (프로토타입)'});
+      kbChatAddDoc('현장_점검사진_요약.pdf',{summary:'내 PC에서 올린 파일 · AI 요약 (프로토타입)',railId:it.closest('#heroCtxPop')?'kbNew':'kbChat'});
       if(typeof labSay==='function')labSay("'현장_점검사진_요약.pdf'을(를) AI 참고 문서에 올렸어요 (프로토타입)");};
     openF(_cb);}},true);
   modal.addEventListener('click',function(e){
@@ -8444,7 +8480,11 @@ bindSend(coSend,coTa,coPost);
   var cbtn=document.createElement('button');cbtn.className='ctx-btn';cbtn.id='coCtxBtn';cbtn.setAttribute('data-tip-align','left');cbtn.setAttribute('data-tip','AI가 참고할 문서 선택');
   cbtn.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg><span class="ctx-lbl">AI 참고</span><span class="ctx-n"></span>';
   var refpop=document.createElement('div');refpop.className='ctx-pop';refpop.hidden=true;cin.appendChild(refpop);
-  var aiName=null,refSel=null,pend=[],_viaRef=false; // pend = ＋로 붙여 아직 안 보낸 첨부(칩) · _viaRef = AI 참고 입구로 연 선택창인가
+  var aiName=null,refSel=null,pend=[],_viaRef=false,refActive=-1; // pend = ＋로 붙여 아직 안 보낸 첨부(칩) · _viaRef = AI 참고 입구로 연 선택창인가
+  function refItems(){return [].slice.call(refpop.querySelectorAll('.co-refup,.ctx-row:not(.dis)'));}
+  function refHi(){refItems().forEach(function(el,i){el.classList.toggle('hi',i===refActive);});}
+  function refMove(d){var its=refItems();if(!its.length)return;refActive=Math.max(0,Math.min(its.length-1,refActive+d));refHi();if(its[refActive])its[refActive].scrollIntoView({block:'nearest'});}
+  function refPick(){var its=refItems();if(refActive>=0&&its[refActive])its[refActive].click();}
   // 참고는 '내가 관리하는 내 것' (c-194 확정) — 그래서 기본값은 비어 있다.
   //   예전엔 '내가 올린 것'을 전부 켰는데, 순수하게 대화에 올린 첨부까지 근거가 돼 버렸다.
   //   지금 켜지는 건 딱 하나: 이번에 ＋로 붙여 아직 안 보낸 칩(pend) — 방금 한 행동이라 맥락이 분명하다.
@@ -8474,11 +8514,7 @@ bindSend(coSend,coTa,coPost);
       +'<span><b></b>에게 질문<i class="co-aihint"></i></span><span class="sp"></span>'
       +'<button class="co-aix" type="button" title="AI 호출 취소"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>';
     bar.querySelector('span b').textContent=aiName;
-    // 해제 손잡이를 알약 안에 (c-198 재요청 2) — 바깥 ×는 줄을 먹어 숨겼다
-    var _bx=document.createElement('button');_bx.type='button';_bx.className='co-badge-x';_bx.title='AI 호출 취소';
-    _bx.innerHTML='<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-    _bx.addEventListener('click',function(e){e.stopPropagation();aiOff();});
-    bar.querySelector('span b').appendChild(_bx);
+    // 취소 손잡이는 바 맨 끝의 .co-aix를 그대로 쓴다 (c-224) — @AI → 참고 → ×를 한 순서로 묶는다.
     // 근거가 무엇인지 바에서 바로 읽힌다 (c-194) — 0개면 '참고 없이'라고 분명히 말한다
     // 버튼이 이름 옆으로 오면서(c-198) 개수는 버튼이 말한다 — 문구는 0개일 때만 (같은 말이 두 번 서지 않게)
     var _hint=bar.querySelector('.co-aihint');
@@ -8488,8 +8524,9 @@ bindSend(coSend,coTa,coPost);
     ctxSync();
   }
   function ctxSync(){ // AI채팅 #ctxBtn과 같은 상태 문법 — 켠 개수 숫자 + on 테두리
-    ensureSel();var n2=cbtn.querySelector('.ctx-n');
+    ensureSel();var n2=cbtn.querySelector('.ctx-n'),lbl=cbtn.querySelector('.ctx-lbl');
     if(n2)n2.textContent=refSel.size?refSel.size:'';
+    if(lbl)lbl.textContent=refSel.size?'AI 참고 중':'AI 참고';
     var _h=bar.querySelector('.co-aihint'); // 바 문구도 같이 (c-194) — 개수는 버튼이 말하므로 0개일 때만 (c-198)
     if(_h)_h.textContent=refSel.size?'':' · 참고 없이 물어봐요';
     cbtn.classList.toggle('on',refSel.size>0);
@@ -8497,20 +8534,35 @@ bindSend(coSend,coTa,coPost);
   }
   function refOpen(){
     ensureSel();
-    refpop.innerHTML='<div class="ctx-cap"></div>';
-    refpop.querySelector('.ctx-cap').textContent=(aiName?aiName+' AI':'AI')+'가 참고할 문서 선택 — 선택은 다음 호출에도 유지돼요'; // 이름을 담는다 (c-178)
-    // ＋ 첨부 칩(pend)은 여기 안 선다 (c-194 재요청) — 아직 대화에 안 올라간 것이라 참고가 될 수 없다.
-    //   여기서 고르는 문서는 '즉시 올라간다' — 아래 입구가 레일(kbCollab)에 바로 행을 만든다.
-    var _list=coFiles();
-    var _add=document.createElement('div');_add.className='ctx-row';_add.style.color='var(--accent)';
-    _add.innerHTML='<span class="ctx-chk" style="border-color:transparent;background:transparent"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="ctx-nm">문서에서 불러와 올리기</span>';
-    _add.addEventListener('click',function(e){e.stopPropagation();refClose();
+    refpop.innerHTML='';
+    // 새 AI채팅 층과 같은 두 층 구성 (c-216 재요청): 위=새로 올리기(3종) · 아래=이미 올린 문서에서 고르기.
+    var cap1=document.createElement('div');cap1.className='ctx-cap';cap1.textContent='AI가 참고할 문서 업로드';refpop.appendChild(cap1);
+    var add=document.createElement('div');add.className='ctx-add';
+    function upRow(svg,label,onClick){
+      var it=document.createElement('div');it.className='co-refup'; // .am-item 아님 — 전역 캡처 위임(#kbChat 로 넣는)과 충돌 방지 (c-216)
+      it.innerHTML='<svg viewBox="0 0 24 24">'+svg+'</svg><b>'+label+'</b>';
+      it.addEventListener('click',function(e){e.stopPropagation();refClose();onClick();});
+      add.appendChild(it);
+    }
+    upRow('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>','내 PC에서 업로드',function(){
+      if(typeof window.fupOpen!=='function')return;
+      window.fupOpen(function(){var nm='현장_점검사진_요약.pdf';coRailAdd(nm);ensureSel().add(nm);ctxSync();
+        if(typeof labSay==='function')labSay("'"+nm+"'을(를) 올리고 참고로 켰어요 (프로토타입)");});});
+    upRow('<path d="M7 16a4 4 0 01-.5-7.97A6 6 0 0118 8.5a3.5 3.5 0 011 6.85"/><path d="M12 11v8M8.5 15.5L12 19l3.5-3.5"/>','문서에서 업로드',function(){
       if(typeof window.openKbPick!=='function')return;
       _viaRef=true; // 아래 칩 캡처 리스너가 이 선택을 첨부 칩으로 오해하지 않게
       window.openKbPick(function(names){_viaRef=false;
         (names||[]).forEach(function(n){coRailAdd(n);ensureSel().add(n);});
         ctxSync();if(typeof labSay==='function')labSay((names||[]).length+'개 문서를 올리고 참고로 켰어요 (프로토타입)');});});
-    refpop.appendChild(_add);
+    upRow('<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>','직접 작성',function(){
+      if(typeof window.openTextWrite!=='function')return;
+      window.openTextWrite(function(o){var t=(o&&o.title)||'새 메모';coRailAdd(t);ensureSel().add(t);ctxSync();
+        if(typeof labSay==='function')labSay("'"+t+"'을(를) 올리고 참고로 켰어요 (프로토타입)");});});
+    refpop.appendChild(add);
+    var _sep=document.createElement('div');_sep.className='ctx-sep';refpop.appendChild(_sep);
+    var cap2=document.createElement('div');cap2.className='ctx-cap';cap2.textContent='AI가 참고할 문서 선택';refpop.appendChild(cap2);
+    // 아래는 이미 올라온 문서에서 고르기 (즉시 올림이 아니라 토글) — pend 첨부 칩은 여기 안 선다 (c-194)
+    var _list=coFiles();
     _list.forEach(function(f){
       var _tail=f.proc?'문서 분석 중':'';
       var d=document.createElement('div');d.className='ctx-row'+(refSel.has(f.name)?' on':'')+(f.proc?' dis':'');
@@ -8523,11 +8575,11 @@ bindSend(coSend,coTa,coPost);
         ctxSync();});
       refpop.appendChild(d);
     });
-    refpop.hidden=false;cbtn.classList.add('open');
+    refActive=-1;refpop.hidden=false;cbtn.classList.add('open');refHi();
   }
-  function refClose(){refpop.hidden=true;cbtn.classList.remove('open');}
-  cbtn.addEventListener('click',function(e){e.stopPropagation();if(refpop.hidden)refOpen();else refClose();});
-  function aiOn(nm){aiName=nm;barSync();coTa.placeholder='';} // 뱃지가 이미 누구에게인지 말한다 — 안내문 없음 (c-205)
+  function refClose(){refpop.hidden=true;refActive=-1;cbtn.classList.remove('open');}
+  cbtn.addEventListener('click',function(e){e.stopPropagation();if(refpop.hidden)refOpen();else refClose();coTa.focus();});
+  function aiOn(nm){aiName=nm;barSync();coTa.placeholder='';refOpen();coTa.focus();} // AI 호출 직후 참고 창은 열되 실제 커서는 입력창에 둔다 (c-221)
   function aiOff(){aiName=null;bar.hidden=true;refClose();coTa.placeholder='메시지를 입력하세요… (@로 AI 멘션)';} // 버튼은 바 안에 있어 바와 함께 사라진다 (c-178)
   function mntQuery(){
     var v=coTa.value,pos=(coTa.selectionStart==null?v.length:coTa.selectionStart);
@@ -8561,9 +8613,22 @@ bindSend(coSend,coTa,coPost);
     });
     pop.hidden=false;mntHi();
   }
-  coTa.addEventListener('input',function(){var q=mntQuery();if(q)mntOpen(q);else{pop.hidden=true;mntActive=-1;}});
-  // 멘션 팝업이 열려 있으면 ↑↓로 이동, Enter/Tab으로 선택 (c-209) — capture로 잡아 전송(preSend)보다 먼저 처리
+  coTa.addEventListener('input',function(){
+    if(aiName&&!refpop.hidden)refClose(); // 질문을 쓰기 시작하면 참고 선택은 끝난 것으로 보고 창을 닫는다 (c-221)
+    var q=mntQuery();if(q)mntOpen(q);else{pop.hidden=true;mntActive=-1;}
+  });
+  // 멘션/AI 참고 층 모두 입력창의 방향키로 이동한다. 참고 층에서 ↓로 끝을 지나면 입력 커서로 돌아온다 (c-221).
   coTa.addEventListener('keydown',function(e){
+    if(!refpop.hidden){
+      var rits=refItems();
+      if(e.key==='ArrowUp'){e.preventDefault();e.stopPropagation();refMove(refActive<0?rits.length:-1);return;}
+      if(e.key==='ArrowDown'&&refActive>=0){e.preventDefault();e.stopPropagation();if(refActive===rits.length-1){refActive=-1;refHi();var cp=coTa.selectionStart==null?coTa.value.length:coTa.selectionStart;coTa.focus();requestAnimationFrame(function(){coTa.setSelectionRange(cp,cp);});}else refMove(1);return;}
+      if((e.key==='Enter'||e.key==='Tab')&&refActive>=0){e.preventDefault();e.stopPropagation();refPick();return;}
+    }
+    // 닫힌 참고 층도 입력 시작점에서 ←를 누르면 다시 연다. 입력창으로 돌아올 때는 실제 caret까지 복원한다 (c-223).
+    if(e.key==='ArrowLeft'&&aiName&&refpop.hidden&&coTa.selectionStart===0&&coTa.selectionEnd===0){
+      e.preventDefault();e.stopPropagation();refOpen();var back=refItems();refActive=back.length-1;refHi();return;
+    }
     if(!pop.hidden){
       if(e.key==='ArrowDown'){e.preventDefault();e.stopPropagation();mntMove(1);return;}
       if(e.key==='ArrowUp'){e.preventDefault();e.stopPropagation();mntMove(-1);return;}
@@ -9158,7 +9223,7 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remo
   //   ⋯ 메뉴는 kbRowMenu(공용 attach)로 붙여 정보 4줄 서식(c-176)·클라우드(c-143)와 저절로 일치한다.
   window.kbChatAddDoc=function(name,opts){
     opts=opts||{};
-    var kbChat=document.getElementById('kbChat');if(!kbChat)return null;
+    var kbChat=document.getElementById(opts.railId||'kbChat');if(!kbChat)return null;
     var row=document.createElement('div');row.className='krow';
     row.dataset.who=opts.who||'내가 올림 · 오늘';
     if(opts.inlib){row.dataset.inlib='1';row.dataset.loc=opts.loc||'미분류';}
@@ -9197,6 +9262,7 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remo
     if(typeof window.kbRowMenu==='function')window.kbRowMenu(row);
     if(typeof kbUpdateUseCount==='function')kbUpdateUseCount();
     if(typeof window.ctxListRefresh==='function')ctxListRefresh(); // 새 행 추가도 열린 층에 바로 반영 (c-190)
+    if(typeof window.heroCtxRefresh==='function')window.heroCtxRefresh(); // 히어로(새 채팅) 층도 함께 (c-212)
     return row;
   };
   function addChatLocalNote(t,content){
@@ -9472,6 +9538,77 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remo
    }}
   syncBtn();
 })();
+
+
+// ── 히어로(새 채팅) AI 참고 층 (c-212, c-216 복구) — 아래 대화 입력창(#ctxBtn)과 같은 상태 문법.
+//    대상 레일만 #kbNew 인 자립 인스턴스라 본체는 안 건드린다. 목록은 #heroCtxList 에 그린다.
+//    위쪽 3종(내 PC·문서에서·직접)은 전역 .am-item 위임이 처리한다 — #heroCtxPop 안이면 #kbNew 로 올린다.
+(function(){
+  var btn=document.getElementById('heroCtxBtn'),pop=document.getElementById('heroCtxPop'),
+      list=document.getElementById('heroCtxList'),n=document.getElementById('heroCtxN');
+  if(!btn||!pop||!list)return;
+  var rows=function(){return [].slice.call(document.querySelectorAll('#kbNew .krow'));};
+  var navActive=0;
+  var eyeOf=function(r){return r.querySelector('.keye');};
+  var isOn=function(r){var e=eyeOf(r);return !!e&&e.dataset.on==='1';};
+  var CHK='<svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg>';
+  function applyTip(){ if(btn.classList.contains('open'))btn.removeAttribute('data-tip'); else btn.dataset.tip=btn.dataset.tipText||'AI가 참고할 파일 선택'; }
+  function syncBtn(){
+    var c=rows().filter(isOn).length;
+    if(n)n.textContent=c?c:'';
+    btn.classList.toggle('on',c>0);
+    var _lbl=btn.querySelector('.ctx-lbl');if(_lbl)_lbl.textContent=c>0?'AI 참고 중':'AI 참고';
+    btn.dataset.tipText=c>0?(c+'개의 파일을 AI가 참고 중'):'AI가 참고할 파일 선택';
+    applyTip();
+  }
+  function mkRow(r){
+    var nm=r.querySelector('.kname')?r.querySelector('.kname').textContent.trim():'파일';
+    var proc=!!(r.dataset&&r.dataset.proc);
+    var row=document.createElement('div');
+    row.className='ctx-row'+(isOn(r)?' on':'')+(proc?' dis':'');
+    row.innerHTML='<span class="ctx-chk">'+CHK+'</span><span class="ctx-nm"></span>'+(proc?'<span style="margin-left:auto;font-size:var(--fs-cap);color:var(--accent)">문서 분석 중</span>':'');
+    row.querySelector('.ctx-nm').textContent=nm;
+    row.addEventListener('click',function(e){e.stopPropagation();
+      if(proc){if(typeof labSay==='function')labSay('아직 분석 중이에요 — 끝나면 참고로 선택할 수 있어요');return;}
+      var eye=eyeOf(r);if(!eye)return;var next=!isOn(r);
+      if(typeof keyeSet==='function')keyeSet(eye,next); else eye.dataset.on=next?'1':'0';
+      if(typeof kbUpdateUseCount==='function')kbUpdateUseCount();
+      row.classList.toggle('on',next);syncBtn();
+    });
+    return row;
+  }
+  function render(){
+    list.innerHTML='';var rs=rows();
+    if(!rs.length){list.innerHTML='<div class="ctx-empty">아직 참고할 문서가 없습니다.<br>위 버튼들로 문서를 추가해 보세요.</div>';return;}
+    rs.forEach(function(r){list.appendChild(mkRow(r));});
+  }
+  function navItems(){return [].slice.call(pop.querySelectorAll('.ctx-add .am-item,#heroCtxList .ctx-row'));}
+  function navHi(){var its=navItems();if(!its.length){navActive=-1;return;}navActive=(navActive+its.length)%its.length;its.forEach(function(el,i){el.classList.toggle('hi',i===navActive);});if(its[navActive])its[navActive].scrollIntoView({block:'nearest'});}
+  function navMove(d){var its=navItems();if(!its.length)return;navActive=(navActive+d+its.length)%its.length;navHi();}
+  function navPick(){var its=navItems();if(navActive>=0&&its[navActive])its[navActive].click();}
+  window.heroCtxRefresh=function(){ if(!pop.hidden){render();navHi();} syncBtn(); };
+  function open(){document.querySelectorAll('.ctx-pop').forEach(function(p){if(p!==pop)p.hidden=true;});render();navActive=0;navHi();pop.hidden=false;btn.classList.add('open');applyTip();}
+  function close(){pop.hidden=true;navItems().forEach(function(el){el.classList.remove('hi');});btn.classList.remove('open');applyTip();}
+  btn.addEventListener('click',function(e){e.stopPropagation();pop.hidden?open():close();});
+  pop.addEventListener('click',function(e){e.stopPropagation();});
+  document.addEventListener('click',function(e){
+    if(pop.hidden)return;
+    if(e.target.closest('#heroCtxBtn')||e.target.closest('#heroCtxPop'))return;
+    close();
+  });
+  document.addEventListener('keydown',function(e){
+    if(pop.hidden)return;
+    if(e.key==='ArrowDown'){e.preventDefault();navMove(1);return;}
+    if(e.key==='ArrowUp'){e.preventDefault();navMove(-1);return;}
+    if(e.key==='Enter'){e.preventDefault();navPick();return;}
+    if(e.key==='Escape')close();
+  });
+  var kbn=document.getElementById('kbNew');
+  if(kbn&&window.MutationObserver){new MutationObserver(function(){syncBtn();if(!pop.hidden)render();})
+    .observe(kbn,{subtree:true,attributes:true,attributeFilter:['data-on'],childList:true});}
+  syncBtn();
+})();
+
 
 // ── 호버 미리보기 (c-018) — 협업 파일 목록에서 행에 머무르면 패널 왼쪽에 미리보기가 뜬다.
 //    클릭해서 아래로 펼치는 미리보기(#kbTextPrev)와는 별개 — 그쪽이 열려 있는 행에는 띄우지 않는다.
