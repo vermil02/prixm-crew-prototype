@@ -1614,19 +1614,18 @@ html[data-theme="dark"] .kfpage{background:#e9e9ec}
 .co-mnt-it .co-mnt-role{color:var(--text-3);font-size:var(--fs-cap);margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* 입력창 '같은 줄' — ＋ 뒤에 [@이름][AI 참고]가 서고 그 옆으로 글을 쓴다 (c-198 재요청 2).
    별도 줄을 만들지 않으므로 wrap 없이 한 행으로 흐른다. */
-#s-collab .composer-box>.co-aibar{margin:0;border:none;background:transparent;padding:0;gap:6px;flex-shrink:0;align-self:center}
+#s-collab .composer-box>.co-aibar{margin:0;border:none;background:transparent;padding:0;gap:2px;flex-shrink:0;align-self:center}
 .co-aibar{display:flex;align-items:center;gap:7px;padding:5px 10px;margin-bottom:6px;border:1px solid var(--border-l);border-radius:12px;background:var(--surface-2);font-size:var(--fs-ui)}
-/* 같은 줄에 서는 것은 딱 둘 — [@이름] 알약과 [AI 참고] 아이콘 (c-198 재요청 2).
-   '에게 질문 · 참고 없이…' 문구·별·취소(×)는 줄을 먹으므로 숨긴다. 해제는 알약의 ×로. */
-#s-collab .composer-box>.co-aibar>span:first-of-type{display:inline-flex;align-items:center;gap:0;font-size:0}
-#s-collab .composer-box>.co-aibar>span:first-of-type b{display:inline-flex;align-items:center;gap:4px;color:var(--accent);background:var(--surface-2);border:1px solid var(--border-l);border-radius:9999px;padding:4px 5px 4px 9px;font-weight:600;font-size:var(--fs-ui);white-space:nowrap}
-#s-collab .composer-box>.co-aibar>span:first-of-type b::before{content:'@'}
-#s-collab .composer-box>.co-aibar>span:first-of-type .co-aihint{display:none}
+/* @이름은 버튼 왼쪽에 붙이고, 그 뒤 아이콘 세트만 간격을 둔다. × 앞에는 버튼의 우측 여백을 유지한다 (c-248 재요청). */
 #s-collab .composer-box>.co-aibar>svg,#s-collab .composer-box>.co-aibar>.sp{display:none}
-#s-collab .composer-box>.co-aibar>.co-aix{display:none}
-.co-badge-x{display:inline-grid;place-items:center;width:18px;height:18px;border:none;background:transparent;border-radius:9999px;color:var(--text-3);cursor:pointer;padding:0}
-.co-badge-x:hover{background:var(--hover);color:var(--ink)}
-.co-badge-x svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+#s-collab .composer-box>.co-aibar .ctx-btn{padding:0 8px 0 12px;gap:0}
+#s-collab .composer-box>.co-aibar .ctx-btn .co-ainame{display:inline-flex;align-items:center;margin-right:6px;color:var(--accent);font-weight:500;font-size:var(--fs-ui);white-space:nowrap}
+#s-collab .composer-box>.co-aibar .ctx-btn .ctx-lbl{margin-left:0;margin-right:0}
+#s-collab .composer-box>.co-aibar .ctx-btn:hover .ctx-lbl,#s-collab .composer-box>.co-aibar .ctx-btn:focus-visible .ctx-lbl,#s-collab .composer-box>.co-aibar .ctx-btn.open .ctx-lbl{margin-left:5px;margin-right:3px}
+#s-collab .composer-box>.co-aibar .ctx-btn .ctx-n{margin-left:2px} /* 접힌 상태의 아이콘·숫자 사이는 2px만 둔다 (c-253 재요청) */
+#s-collab .composer-box>.co-aibar .ctx-btn:hover .ctx-n,#s-collab .composer-box>.co-aibar .ctx-btn:focus-visible .ctx-n,#s-collab .composer-box>.co-aibar .ctx-btn.open .ctx-n{margin-left:0} /* 펼치면 라벨 우측 3px 여백만 유지 */
+#s-collab .composer-box>.co-aibar>.co-aix{display:grid;place-items:center;width:20px;height:20px;padding:0;margin-left:0;flex-shrink:0}
+#s-collab .composer-box>.co-aibar>.co-aix svg{width:12px;height:12px;stroke-width:2}
 .co-aibar>svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.7;flex-shrink:0}
 .co-aibar .sp{flex:1}
 .co-aibar .co-refbtn{border:1px solid var(--border-l);background:var(--canvas);border-radius:8px;padding:2px 9px;font-size:var(--fs-cap);cursor:pointer;color:var(--text-2)}
@@ -8518,20 +8517,13 @@ bindSend(coSend,coTa,coPost);
   function barSync(){
     if(!aiName){bar.hidden=true;ctxSync();return;}
     ensureSel();bar.hidden=false;
-    bar.innerHTML='<svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.6 5.6 1.4-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/></svg>'
-      +'<span><b></b>에게 질문<i class="co-aihint"></i></span><span class="sp"></span>'
-      +'<button class="co-aix" type="button" title="AI 호출 취소"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>';
-    bar.querySelector('span b').textContent=aiName;
-    var _badgeX=document.createElement('button');_badgeX.type='button';_badgeX.className='co-badge-x';_badgeX.title='AI 호출 취소';
-    _badgeX.innerHTML='<svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>';
-    bar.querySelector('span b').appendChild(_badgeX);
-    _badgeX.addEventListener('click',function(e){e.stopPropagation();aiOff();});
+    bar.innerHTML=''; // 닫기 버튼 없이 멘션 묶음만 표시하고, 빈 입력창의 Backspace로 해제한다 (c-251)
+    var _name=cbtn.querySelector('.co-ainame');
+    if(!_name){_name=document.createElement('b');_name.className='co-ainame';cbtn.insertBefore(_name,cbtn.firstChild);}
+    _name.textContent='@'+aiName;
     // 근거가 무엇인지 바에서 바로 읽힌다 (c-194) — 0개면 '참고 없이'라고 분명히 말한다
     // 버튼이 이름 옆으로 오면서(c-198) 개수는 버튼이 말한다 — 문구는 0개일 때만 (같은 말이 두 번 서지 않게)
-    var _hint=bar.querySelector('.co-aihint');
-    if(_hint)_hint.textContent=refSel.size?'':' · 참고 없이 물어봐요';
-    bar.querySelector('.co-aix').addEventListener('click',function(e){e.stopPropagation();aiOff();});
-    bar.insertBefore(cbtn,bar.querySelector('.sp')); // 부른 이름 문구 바로 뒤 (c-198) — 누구에게 딸린 참고인지 붙어 읽힌다
+    bar.appendChild(cbtn);
     ctxSync();
   }
   function ctxSync(){ // AI채팅 #ctxBtn과 같은 상태 문법 — 켠 개수 숫자 + on 테두리
@@ -8634,6 +8626,10 @@ bindSend(coSend,coTa,coPost);
   });
   // 멘션/AI 참고 층 모두 입력창의 방향키로 이동한다. 참고 층에서 ↓로 끝을 지나 입력 커서로 돌아오면 층도 닫는다 (c-221, c-227).
   coTa.addEventListener('keydown',function(e){
+    // 입력할 내용이 없는 시작점에서 Backspace를 누르면 앞의 멘션·AI 참고 묶음을 지운다 (c-251).
+    if(e.key==='Backspace'&&aiName&&!coTa.value&&coTa.selectionStart===0&&coTa.selectionEnd===0){
+      e.preventDefault();e.stopPropagation();aiOff();return;
+    }
     if(!refpop.hidden){
       var rits=refItems();
       if(e.key==='ArrowUp'){e.preventDefault();e.stopPropagation();refMove(refActive<0?rits.length:-1);return;}
@@ -9602,8 +9598,8 @@ requestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.remo
     var nm=r.querySelector('.kname')?r.querySelector('.kname').textContent.trim():'파일';
     var proc=!!(r.dataset&&r.dataset.proc);
     var row=document.createElement('div');
-    row.className='ctx-row'+(isOn(r)?' on':'')+(proc?' dis':'');
-    row.innerHTML='<span class="ctx-chk">'+CHK+'</span><span class="ctx-nm"></span>'+(proc?'<span style="margin-left:auto;font-size:var(--fs-cap);color:var(--accent)">문서 분석 중</span>':'');
+    row.className='ctx-row'+(isOn(r)?' on':'')+(proc?' proc':'');
+    row.innerHTML='<span class="ctx-chk">'+CHK+'</span><span class="ctx-nm"></span>';
     row.querySelector('.ctx-nm').textContent=nm;
     row.addEventListener('click',function(e){e.stopPropagation();
       if(proc){if(typeof labSay==='function')labSay('아직 분석 중이에요 — 끝나면 참고로 선택할 수 있어요');return;}
