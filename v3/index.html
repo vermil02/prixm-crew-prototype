@@ -2576,7 +2576,7 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
     <button class="rail-btn" data-s="mail">
       <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/></svg>
       <span>이메일</span></button>
-    <button class="rail-btn" data-s="wiki">
+    <button class="rail-btn" data-s="wiki" style="display:none">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg>
       <span>Wiki</span></button>
     <button class="rail-btn" data-s="office">
@@ -2596,7 +2596,7 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
     <button class="rail-btn" id="railMsgDemo" title="새 메시지 알림을 받아봅니다 (프로토타입 데모)">
       <svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z"/><path d="M3.5 6.5L12 13l8.5-6.5"/></svg>
       <span>메시지 수신</span></button>
-    <button class="rail-btn" data-s="lab" style="margin-bottom:4px">
+    <button class="rail-btn" data-s="lab" style="display:none;margin-bottom:4px">
       <svg viewBox="0 0 24 24"><path d="M10 2v6.5L4.7 17.4A3 3 0 007.3 22h9.4a3 3 0 002.6-4.6L14 8.5V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg>
       <span>LAB</span></button>
     <button class="rail-btn" id="railDemoBtn" style="margin-bottom:4px" title="데모 도구 — 데이터 상태(초기/기본/꽉참) · 메시지 수신 · LAB">
@@ -2613,7 +2613,7 @@ table.chh .chh-go .cgo:hover{text-decoration:underline}
       <button class="rdm-opt" data-kbv="2">버전2 — 우하단 런처 + 챗봇창</button>
       <div class="rdm-sep"></div>
       <button class="rdm-act" id="rdmMsg">메시지 수신 데모</button>
-      <button class="rdm-act" id="rdmLab">LAB 열기</button>
+      <button class="rdm-act" id="rdmLab" style="display:none">LAB 열기</button>
     </div>
     <div class="rail-rsz" id="railRsz" title="드래그로 폭 조절"></div>
   </nav>
@@ -7178,7 +7178,8 @@ function aiTocBuild(filter){
 function aiChatMode(title){
   if(!aiThread)return;
   if(title==='긴 대화 데모'){aiBuildLong();aiThread.dataset.mode='long';}
-  else if(aiThread.dataset.mode==='long'){aiThread.innerHTML=showcaseHTML;aiThread.dataset.mode='show';}
+  else if(title==='간단 번역 요청'){aiThread.innerHTML='';aiThread.dataset.mode='empty';}
+  else if(aiThread.dataset.mode==='long'||aiThread.dataset.mode==='empty'){aiThread.innerHTML=showcaseHTML;aiThread.dataset.mode='show';}
   const q=document.getElementById('tocQ');if(q)q.value='';
   aiTocBuild();
   if(aiMsgs)aiMsgs.scrollTop=0;
@@ -8312,7 +8313,11 @@ function coOpenDM(name){
 }
 function coSetChannel(name){
   coMode='channel';
-  if(coThreadDefault!==null)coThreadEl.innerHTML=coThreadDefault;
+  // 채널별 대화 상태 — 주간업무는 기본 스레드를 유지하고, 비공개 기획은 빈 대화로 시작한다 (c-255).
+  // 내용이 없어도 스크롤 컨테이너(#coMsgs)는 그대로 두어 이후 메시지가 쌓이면 자연스럽게 스크롤된다.
+  if(coThreadDefault===null)coThreadDefault=coThreadEl.innerHTML;
+  coThreadEl.innerHTML=(name==='# 비공개-기획')?'':coThreadDefault;
+  coMsgs.scrollTo({top:name==='# 비공개-기획'?0:coMsgs.scrollHeight});
   coHeadTitle.textContent=name;
   coHeadSub.textContent='참여 3 · AI가 활용할 데이터가 있어요';
   const pop=document.getElementById('coDmPop');if(pop)pop.hidden=true;
