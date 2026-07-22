@@ -3998,7 +3998,7 @@ document.querySelectorAll('.rail-btn[data-s]').forEach(b=>{
     b.classList.add('on');
     document.getElementById('s-'+b.dataset.s).classList.add('on');
     history.replaceState(null,'','#'+b.dataset.s); // 새로고침해도 현재 화면 유지
-    if(b.dataset.s==='ai'&&typeof aiCurSub==='function')aiSubHash(aiCurSub()); // 화면 복귀 시 내부 뷰 서브키 재동기화
+    if(b.dataset.s==='ai'&&typeof aiView==='function'){aiView('aiViewNew');if(typeof aiActive==='function')aiActive(document.getElementById('aiNewBtn'));} // GNB AI채팅은 새 AI채팅 시작 화면으로 진입 (c-214)
     else if(b.dataset.s==='know'&&typeof knowSubHash==='function')knowSubHash();
     else if(b.dataset.s==='flow'&&typeof flowCurSub==='function')flowSubHash(flowCurSub());
     else if(b.dataset.s==='mail'){const t=document.getElementById('mailTitle')?.textContent.trim();
@@ -8596,7 +8596,7 @@ bindSend(coSend,coTa,coPost);
     if(pend.length){
       // 이 줄이 '멤버에게 보내는 첨부'임을 맨 앞에서 밝힌다 (c-208) — AI 참고와 헷갈리지 않게.
       var lead=document.createElement('span');lead.className='co-chip-lead';
-      lead.innerHTML='<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><b>멤버에게 공유</b>';
+      lead.innerHTML='<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><b>멤버 공유</b>';
       chips.appendChild(lead);
     }
     pend.forEach(function(nm){
