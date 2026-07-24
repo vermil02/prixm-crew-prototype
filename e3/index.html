@@ -146,6 +146,7 @@ textarea,input{font:inherit}
 .mnt-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-lg);cursor:pointer}
 .mnt-row:hover{background:var(--hover)}
 .mnt-row.picked{opacity:.4;pointer-events:none} /* 이 @에서 이미 선택된 AI — 한 번만 */
+.mnt-row.active{background:var(--hover)} /* ↑↓ 키보드 하이라이트 */
 .mnt-row.picked>span:last-child::after{content:' · 선택됨'}
 .mnt-row .avatar{width:22px;height:22px;font-size:10px}
 .mnt-row b{font-size:13px;font-weight:500}
@@ -216,6 +217,8 @@ body.v-c .ai-pn.big{width:480px;height:min(760px,calc(100vh - 120px))}
 .pn-ans .meta b{font-size:var(--fs-cap);font-weight:500}
 .pn-proc{display:flex;align-items:center;gap:6px;font-size:var(--fs-cap);color:var(--text-3);margin-bottom:6px}
 .pn-proc .dot{width:6px;height:6px;border-radius:99px;background:var(--text-3);animation:pulse 1.2s ease infinite}
+.pn-cancel{margin-left:auto;font-size:var(--fs-cap);color:var(--text-3);border:1px solid var(--border-l);border-radius:var(--r-pill);padding:2px 9px;background:var(--canvas);flex-shrink:0} /* 처리 중 취소 */
+.pn-cancel:hover{background:var(--hover);color:var(--ink)}
 @keyframes pulse{50%{opacity:.25}}
 .pn-ans .prose{font-size:var(--fs-ui);line-height:1.55}
 .pn-acts{display:flex;gap:6px;margin-top:10px}
@@ -574,14 +577,14 @@ function ask(txt,fresh,targets){
   who.forEach(function(nm,i){
     var a=document.createElement('div');a.className='pn-ans';
     a.innerHTML='<div class="meta"><span class="avatar ai"></span><b></b><span class="chip-ai">AI</span></div>'
-      +'<div class="pn-proc"><span class="dot"></span>처리 중…</div>'
+      +'<div class="pn-proc"><span class="dot"></span>처리 중…<button class="pn-cancel" type="button">취소</button></div>'
       +'<div class="prose" hidden></div>'
       +'<div class="pn-acts" hidden><button data-a="share">대화창에 공유</button><button data-a="copy">복사</button></div>';
     if(nm==='AI 매니저')a.querySelector('.avatar').innerHTML='<svg viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>'; // 매니저 = 로봇 글리프(식별 마크), 옆 'AI' 칩과 역할 분담
     else a.querySelector('.avatar').textContent=nm.charAt(0);
     a.querySelector('.meta b').textContent=nm;
     pnBody.appendChild(a);
-    setTimeout(function(){
+    var timer=setTimeout(function(){
       a.querySelector('.pn-proc').textContent=(nm==='AI 매니저')
         ?'박은수(데이터 분석 AI)에게서 점검 대상 데이터를 받아 정리했어요'
         :'이 대화의 자료와 데이터를 기반으로 처리했어요';
@@ -591,6 +594,11 @@ function ask(txt,fresh,targets){
       pnBody.scrollTo({top:pnBody.scrollHeight,behavior:'smooth'});
       markUnseen(); // 답변 도착 — 사용자가 AI를 안 보고 있으면 알림 점
     },1800+i*900); // 처리 중이 살짝 더 걸리게 (약 2배)
+    // 처리 중 취소 — 대기 중인 답변을 멈춤 (2026-07-24 JH)
+    a.querySelector('.pn-cancel').addEventListener('click',function(){
+      clearTimeout(timer);
+      var proc=a.querySelector('.pn-proc');proc.classList.add('cancelled');proc.textContent='요청을 취소했어요';
+    });
   });
   pnBody.scrollTo({top:pnBody.scrollHeight,behavior:'smooth'});
 }
@@ -900,11 +908,25 @@ aiTa.addEventListener('compositionstart',function(){aiTa.classList.add('composin
 aiTa.addEventListener('compositionend',function(){aiTa.classList.remove('composing');dotSync();mntCheck();});
 // 입력창 포커스 중엔 Tab = 채팅 ↔ AI 요청 모드 전환 · Esc = 포커스 해제(그 뒤 Tab은 원래대로) (2026-07-24 JH)
 aiTa.addEventListener('keydown',function(e){
+  if(!mntPop.hidden){ // @ 리스트 열림 — ↑↓ 이동 · Enter 선택 (전송 핸들러보다 먼저라 stopImmediate로 전송 차단)
+    var rows=[].slice.call(mntPop.querySelectorAll('.mnt-row:not(.picked)'));
+    if(rows.length){
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+        e.preventDefault();
+        var ci=rows.indexOf(mntPop.querySelector('.mnt-row.active'));
+        var ni=e.key==='ArrowDown'?(ci+1)%rows.length:(ci<=0?rows.length-1:ci-1);
+        rows.forEach(function(r){r.classList.remove('active');});rows[ni].classList.add('active');
+        return;
+      }
+      if(e.key==='Enter'){var a=mntPop.querySelector('.mnt-row.active')||rows[0];e.preventDefault();e.stopImmediatePropagation();mntPick(a.dataset.n);return;}
+    }
+  }
   if(e.key==='Tab'){
     e.preventDefault();
     var next=mode==='ai'?'member':'ai';
     var tb=document.querySelector('.duo button[data-m="'+next+'"]');if(tb)tb.click();
   }else if(e.key==='Escape'){
+    if(!mntPop.hidden){mntPop.hidden=true;return;} // @ 리스트 열려 있으면 Esc는 리스트만 닫음
     aiTa.blur();
   }
 });
