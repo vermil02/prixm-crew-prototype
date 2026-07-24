@@ -145,6 +145,8 @@ textarea,input{font:inherit}
 .mnt-cap{font-size:11px;color:var(--text-3);padding:4px 8px}
 .mnt-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-lg);cursor:pointer}
 .mnt-row:hover{background:var(--hover)}
+.mnt-row.picked{opacity:.4;pointer-events:none} /* 이 @에서 이미 선택된 AI — 한 번만 */
+.mnt-row.picked>span:last-child::after{content:' · 선택됨'}
 .mnt-row .avatar{width:22px;height:22px;font-size:10px}
 .mnt-row b{font-size:13px;font-weight:500}
 .mnt-row>span:last-child{margin-left:auto;font-size:11px;color:var(--text-3);white-space:nowrap}
@@ -917,7 +919,7 @@ aiTa.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.p
 
 // ── @ 멘션 — AI직원 리스트 (v4 AI_STAFF 그대로) · 칩 뒤에 쓰는 지시가 그 묶음이 된다 (0723 문서) ──
 var AI_STAFF=[{n:'민서연',r:'지식 관리 전문가'},{n:'박은수',r:'데이터 분석 AI'},{n:'이동진',r:'외부 연동 AI'}];
-var mntPop=document.getElementById('mntPop'),_mntNode=null,_mntOff=0;
+var mntPop=document.getElementById('mntPop'),_mntNode=null,_mntOff=0,_mntPicked=null,_mntAfter=null;
 function mntCheck(){ // 캐럿 바로 앞이 '@'면 리스트를 연다
   if(mode!=='ai'){mntPop.hidden=true;return;}
   var s=window.getSelection();
@@ -928,9 +930,10 @@ function mntCheck(){ // 캐럿 바로 앞이 '@'면 리스트를 연다
   else mntPop.hidden=true;
 }
 function mntOpen(){
-  mntPop.innerHTML='<div class="mnt-cap">AI직원 호출 — 뒤에 쓰는 지시가 함께 묶여요</div>';
+  _mntPicked={};_mntAfter=null; // 새 @ 버스트 — 선택 초기화
+  mntPop.innerHTML='<div class="mnt-cap">AI직원 호출 — 여러 명 선택 가능 · 뒤에 쓰는 지시가 함께 묶여요</div>';
   AI_STAFF.forEach(function(s){
-    var r=document.createElement('div');r.className='mnt-row';
+    var r=document.createElement('div');r.className='mnt-row';r.dataset.n=s.n;
     r.innerHTML='<span class="avatar ai"></span><b></b><span></span>';
     r.querySelector('.avatar').textContent=s.n.charAt(0);
     r.querySelector('b').textContent=s.n;
@@ -941,25 +944,32 @@ function mntOpen(){
   mntPop.hidden=false;
 }
 function mntPick(nm){
-  var node=_mntNode,off=_mntOff;
-  if(!node||!aiTa.contains(node)){mntPop.hidden=true;return;}
-  node.textContent=node.textContent.slice(0,off-1)+node.textContent.slice(off); // 트리거 '@' 제거
-  var after=node.splitText(off-1);
-  // 앞 묶음에 이미 지시 텍스트가 있으면 새 묶음 — 구분선을 세운다 (묶음끼리 앞뒤 구분, 0723 문서)
-  var seg='';
-  for(var i=0;i<aiTa.childNodes.length;i++){var c=aiTa.childNodes[i];
-    if(c===node){seg+=c.textContent;break;}
-    if(c.classList&&c.classList.contains('mtag')){seg='';continue;}
-    if(c.classList&&c.classList.contains('bsep'))continue;
-    seg+=c.textContent||'';
+  if(_mntPicked&&_mntPicked[nm])return; // 한 @에 같은 AI는 한 번만
+  var after=_mntAfter;
+  if(!after){ // 이 버스트의 첫 선택 — '@' 제거하고 삽입 지점(after) 확보
+    var node=_mntNode,off=_mntOff;
+    if(!node||!aiTa.contains(node)){mntPop.hidden=true;return;}
+    node.textContent=node.textContent.slice(0,off-1)+node.textContent.slice(off); // 트리거 '@' 제거
+    after=node.splitText(off-1);
+    // 앞 묶음에 이미 지시 텍스트가 있으면 새 묶음 — 구분선을 세운다 (묶음끼리 앞뒤 구분, 0723 문서)
+    var seg='';
+    for(var i=0;i<aiTa.childNodes.length;i++){var c=aiTa.childNodes[i];
+      if(c===node){seg+=c.textContent;break;}
+      if(c.classList&&c.classList.contains('mtag')){seg='';continue;}
+      if(c.classList&&c.classList.contains('bsep'))continue;
+      seg+=c.textContent||'';
+    }
+    if(seg.trim()){var sp=document.createElement('span');sp.className='bsep';sp.contentEditable='false';node.parentNode.insertBefore(sp,after);}
+    if(!/^\s/.test(after.textContent))after.textContent=' '+after.textContent; // 칩 뒤 한 칸 — 지시를 이어 쓰게
+    _mntAfter=after;
   }
-  if(seg.trim()){var sp=document.createElement('span');sp.className='bsep';sp.contentEditable='false';node.parentNode.insertBefore(sp,after);}
   var chip=document.createElement('span');chip.className='mtag';chip.contentEditable='false';chip.dataset.n=nm;chip.textContent='@'+nm;
-  node.parentNode.insertBefore(chip,after);
-  if(!/^\s/.test(after.textContent))after.textContent=' '+after.textContent; // 칩 뒤 한 칸 — 지시를 이어 쓰게
-  var r2=document.createRange();r2.setStart(after,Math.min(1,after.textContent.length));r2.collapse(true);
+  _mntAfter.parentNode.insertBefore(chip,_mntAfter); // 칩을 연달아 = 같은 묶음 (대상 여러 명)
+  var r2=document.createRange();r2.setStart(_mntAfter,Math.min(1,_mntAfter.textContent.length));r2.collapse(true);
   var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r2);
-  mntPop.hidden=true;dotSync();aiTa.focus();
+  if(_mntPicked)_mntPicked[nm]=true;
+  var row=mntPop.querySelector('.mnt-row[data-n="'+nm+'"]');if(row)row.classList.add('picked');
+  dotSync();aiTa.focus(); // 팝업은 열어둠 — 여러 명 연속 선택 (닫힘: 지시 입력·Esc·바깥 클릭)
 }
 aiTa.addEventListener('blur',function(){setTimeout(function(){mntPop.hidden=true;},150);});
 // 패널 안 이어서 요청 (A·B 전용 — 멀티턴, 맥락 유지)
